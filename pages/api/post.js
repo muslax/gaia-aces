@@ -3,7 +3,6 @@ import { DB } from "config/db";
 import { connect } from "lib/database";
 import withSession from "lib/session";
 import { createRandomPassword } from "lib/utils";
-// import bcrypt from 'bcryptjs'
 
 const ACCEPTED_QUERIES = {};
 
@@ -28,21 +27,6 @@ export default withSession(async (req, res) => {
   const task = ACCEPTED_QUERIES[q];
   return task (apiUser, req, res);
 });
-
-
-// function createRandomPassword(round = 5) {
-//   const upper = 'ABCDEFGHJKLMNPRSTUVWXYZ';
-//   const lower = upper.toLocaleLowerCase();
-//   const nums = '123456789123456789';
-//   let array = (upper + lower + nums).split('');
-//   array.sort(() => Math.random() - 0.5);
-//   const password = array.join('').substr(0, 7);
-//   const xfpwd = password.split('').reverse().join('');
-//   const saltRounds = round;
-//   const bcrypt = require('bcryptjs');
-//   const hashed_password = bcrypt.hashSync(password, saltRounds);
-//   return { password, hashed_password, xfpwd };
-// }
 
 
 
@@ -97,7 +81,8 @@ ACCEPTED_QUERIES['activate-user'] = async(apiUser, req, res) => {
  * @param {*} res
  * @returns
  */
-ACCEPTED_QUERIES['delete-user'] = async(apiUser, req, res) => {
+ACCEPTED_QUERIES['delete-user'] =
+async(apiUser, req, res) => {
   console.log("delete-user")
   try {
     const id = req.body.id;
@@ -152,7 +137,7 @@ ACCEPTED_QUERIES['reset-user'] = async(apiUser, req, res) => {
   }
 }
 
-//
+
 ACCEPTED_QUERIES['change-password'] = async(apiUser, req, res) => {
   console.log("change-password")
   try {
@@ -199,7 +184,7 @@ ACCEPTED_QUERIES['change-password'] = async(apiUser, req, res) => {
   }
 }
 
-// new-user
+
 ACCEPTED_QUERIES['new-user'] = async(apiUser, req, res) => {
   console.log("new-user")
   try {
