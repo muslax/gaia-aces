@@ -3,7 +3,8 @@ import { WithAuthRedirect } from 'components/WithAuthRedirect';
 import fetchJson from 'lib/fetchJson';
 import { pick } from 'lib/utils';
 import { SWRConfig } from 'swr';
-import 'tailwindcss/tailwind.css'
+// import 'tailwindcss/tailwind.css'
+import 'lib/globals.css';
 
 function MyApp({ Component, pageProps }) {
   // const skeletonLoader = Component.skeletonLoader;

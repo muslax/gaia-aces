@@ -24,7 +24,7 @@ const sampleLicenses = [
 ]
 
 const user = {
-  _id: '6081addde10336304bad3228',
+  _id: ObjectID().toString(), //'6081addde10336304bad3228',
   licenseId: '6081a9e4e10336304bad3227',
   fullname: 'Lidi Astuti',
   username: 'lidias',
@@ -32,6 +32,7 @@ const user = {
   licenseOwner: true,
   verified: false,
   disabled: false,
+  deleted: false,
   gender: null,
   phone: null,
   roles: [],
@@ -202,13 +203,13 @@ const guest = {
 }
 
 const project = {
-  _id: "6081b155f477883e2c26b2ee",
+  _id: ObjectID().toString(), //"6081b155f477883e2c26b2ee",
   licenseId: '6081a9e4e10336304bad3227',
   clientId: '6081b107f477883e2c26b2eb',
   status: null,
-  depmode: 'multi',
-  title: 'Sample Project Title',
-  fullTitle: 'Sample Project Full Title',
+  batchMode: 'multi',
+  title: 'Sample Project Title 2',
+  fullTitle: 'Another Sample Project Full Title',
   description: 'Brief description of this project.',
   startDate: "2021-04-23",
   endDate: "2021-07-10",
@@ -224,7 +225,7 @@ const project = {
 }
 
 export default async (req, res) => {
-  return res.json({ DBNAME: ROUTES.License });
+  return res.json({ user });
 }
 
 // projectId

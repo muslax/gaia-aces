@@ -1,0 +1,24 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply text-gray-600 antialiased;
+}
+body.has-modal {
+  overflow: hidden;
+}
+pre {
+  font-size: .625rem;
+  overflow-x: auto;
+  margin: 1rem 0
+}
+.text-xss {
+  font-size: .625rem;
+}
+.aces-wrap {
+  @apply px-4 sm:px-6;
+}
+.aces-geist {
+  @apply max-w-4xl mx-auto;
+}
