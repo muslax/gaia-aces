@@ -1,4 +1,4 @@
-import { ACESGray } from "components/AcesIcons";
+import { ACESGray } from "components/ACESIcons";
 import { API_ROUTES, ROUTES } from "config/routes";
 import useUser from "hooks/useUser";
 import fetchJson from "lib/fetchJson";
