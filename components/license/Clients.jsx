@@ -48,7 +48,7 @@ export default function Clients({ user }) {
             </td>
             <td className="px-3 py-2">
               <div className="font-medium truncate">
-                {client.name}
+                {client.orgName}
               </div>
               <div className="text-gray-500 font-light">
                 {client.city}

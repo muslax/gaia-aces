@@ -37,7 +37,10 @@ ACCEPTED_QUERIES['disable-user'] = async(apiUser, req, res) => {
     const { db } = await connect();
     const rs = await db.collection(DB.Users).findOneAndUpdate(
       { _id: id },
-      { $set: { disabled: true }}
+      { $set: {
+        disabled: true,
+        updatedAt: new Date()
+      }}
     )
 
     if (rs) {
@@ -59,7 +62,10 @@ ACCEPTED_QUERIES['activate-user'] = async(apiUser, req, res) => {
     const { db } = await connect();
     const rs = await db.collection(DB.Users).findOneAndUpdate(
       { _id: id },
-      { $set: { disabled: false }}
+      { $set: {
+        disabled: false,
+        updatedAt: new Date()
+      }}
     )
 
     if (rs) {
@@ -89,7 +95,11 @@ async(apiUser, req, res) => {
     const { db } = await connect();
     const rs = await db.collection(DB.Users).findOneAndUpdate(
       { _id: id },
-      { $set: { disabled: true, deleted: true }}
+      { $set: {
+        disabled: true, 
+        deleted: true,
+        updatedAt: new Date()
+      }}
     )
 
     if (rs) {
@@ -116,8 +126,10 @@ ACCEPTED_QUERIES['reset-user'] = async(apiUser, req, res) => {
       { _id: id },
       { $set: {
         xfpwd: xfpwd,
-        hashed_password: hashed_password
-      }}
+        hashed_password: hashed_password,
+        updatedAt: new Date()
+        }
+      }
     )
 
     if (rs) {
@@ -164,12 +176,11 @@ ACCEPTED_QUERIES['change-password'] = async(apiUser, req, res) => {
       { $set : {
         hashed_password: hash,
         updatedAt: new Date()
-        },
-        $currentDate: { lastModified: true }
+        }
       },
     )
 
-    console.log('RS', rs);
+    
 
     if (rs) {
       return res.json({

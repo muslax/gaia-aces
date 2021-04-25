@@ -47,7 +47,7 @@ export default function Dashboard({ user }) {
                     {project.title}
                   </div>
                   <div className="text-gray-500 font-light">
-                    {project.client.name}
+                    {project.client.orgName}
                   </div>
                 </a>
               </Link>

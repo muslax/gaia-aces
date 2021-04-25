@@ -6,7 +6,8 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 
 const LicensePage = () => {
-  const { user, isLoading } = useUser()
+  const { user, isLoading } = useUser();
+  
   const router = useRouter();
 
   if (!user.licenseOwner) router.push(ROUTES.Dashboard);
