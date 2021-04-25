@@ -1,12 +1,11 @@
 import { ROUTES } from "config/routes";
-import useUsers from "hooks/useUsers";
 import fetchJson from "lib/fetchJson";
 import Link from "next/link";
 import { useState } from "react";
 import Heading from "./Heading";
 
-export default function FormUser() {
-  const { mutate } = useUsers();
+export default function FormUser({ user, mutate }) {
+  // const { mutate } = useUsers();
   const [fullname, setFullname] = useState('')
   const [email, setEmail] = useState('')
   const [username, setUsername] = useState('')
@@ -46,7 +45,7 @@ export default function FormUser() {
     <div className="rounded-md border px-3 py-3">
       {!createdUser && (
       <table className="w-full text-sm">
-        <tbody>
+        <thead>
           <tr className="border-bs">
             <td colspan="2" className="px-2 py-2 text-lgs">
               Semua kolom harus diisi.
@@ -57,6 +56,8 @@ export default function FormUser() {
               <div className={(submitting ? 'progress' : '') + " h-1 bg-gray-200s border-t border-gray-400"}></div>
             </td>
           </tr>
+        </thead>
+        <tbody>
           <tr className="">
             <td width="25%" className="whitespace-nowrap p-2 pt-5">Nama lengkap:</td>
             <td className="p-2 pt-5">
