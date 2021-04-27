@@ -1,11 +1,13 @@
 import useBatch from "hooks/useBatch";
 import useModulesMeta from "hooks/useModulesMeta";
 import fetchJson from "lib/fetchJson";
+import { getLastVisitedBatchId } from "lib/storage";
 
 const { useState, useEffect } = require("react")
 
 const Modules = ({ user, project }) => {
-  const { batch, isError, isLoading } = useBatch(window.localStorage.getItem("batch"));
+  const batchId = getLastVisitedBatchId(project);
+  const { batch, isError, isLoading } = useBatch(batchId);
   const { modules, isError: metaError, isLoading: metaLoading } = useModulesMeta();
 
   if (isError || isLoading || metaError || metaLoading) return <>...</>;

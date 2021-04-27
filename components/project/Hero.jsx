@@ -1,27 +1,30 @@
+import { getBatchKey, getLastVisitedBatch } from "lib/storage";
 import { useState } from "react"
 import SelectBatch from "./SelectBatch"
 
-function getSelectedBatch(project) {
-  const lsBatch = window.localStorage.getItem("batch");
-  let selectedBatch = null;
+// function getSelectedBatch(project) {
+//   const lsBatch = window.localStorage.getItem("batch");
+//   let selectedBatch = null;
 
-  project.batches.forEach(b => {
-    if (b._id == lsBatch) {
-      selectedBatch = b;
-    }
-  })
-  return selectedBatch;
-}
+//   project.batches.forEach(b => {
+//     if (b._id == lsBatch) {
+//       selectedBatch = b;
+//     }
+//   })
+//   return selectedBatch;
+// }
 
 export const Hero = ({ project, title, isIndex = false }) => {
-  const [selected, setSelected] = useState(getSelectedBatch(project));
+  const batchKey = getBatchKey(project);
+  // const [selected, setSelected] = useState(getSelectedBatch(project));
+  const [selected, setSelected] = useState(getLastVisitedBatch(project));
   
   if (!selected) return null;
 
   function setActiveBatch(e) {
     const id = e._id;
     setSelected(e);
-    window.localStorage.setItem('batch', id);
+    window.localStorage.setItem(batchKey, id);
   }
 
 

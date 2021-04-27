@@ -3,8 +3,6 @@ import { useEffect, useState } from 'react';
 import SelectUser from './SelectUser';
 
 const Info = ({ user, project }) => {
-  // const { currentBatch, setCurrentBatch } = store();
-
   const { users, isLoading, isError } = useUsernames();
   const [selected, setSelected] = useState(null);
   const [form, setForm] = useState(null);

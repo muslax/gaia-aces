@@ -1,7 +1,10 @@
+import { getLastVisitedBatchId } from "lib/storage";
+
 const { default: useBatchPersonae } = require("hooks/useBatchPersonae")
 
-const Personae = ({ user }) => {
-  const { personae, isLoading, isError } = useBatchPersonae(window.localStorage.getItem('batch'));
+const Personae = ({ user, project }) => {
+  const batchId = getLastVisitedBatchId(project);
+  const { personae, isLoading, isError } = useBatchPersonae(batchId);
 
   if (isError || isLoading) return <>...</>;
 

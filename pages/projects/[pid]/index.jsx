@@ -6,29 +6,8 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import useProjectHeader from "hooks/useProjectHeader";
 import Info from "components/project/Info";
+import { setLocalStorage } from "lib/storage";
 
-function getActiveBatchId(project) {
-  const lsBatch = window.localStorage.getItem("batch");
-  let validId = false;
-  project.batches.forEach(b => {
-    if (b._id == lsBatch) {
-      validId = true;
-    }
-  })
-
-  if (validId) {
-    return lsBatch;
-  } else {
-    if (project.batches.length > 0) {
-      const batchId = project.batches[0]["_id"];
-      window.localStorage.setItem('batch', batchId);
-      return batchId;
-    }
-  }
-
-  window.localStorage.setItem('batch', null);
-  return null;
-}
 
 const ProjectPage = () => {
   const { user } = useUser();
@@ -39,7 +18,8 @@ const ProjectPage = () => {
   if (isLoading) return <></>;
   if (isError) { router.push('/not-found') }
   
-  getActiveBatchId(project);
+  // getActiveBatchId(project);
+  setLocalStorage(project);
 
   return <>
     <Head>

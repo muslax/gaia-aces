@@ -27,7 +27,7 @@ const ProjectPage = () => {
 
     <div className="aces-wrap pb-28">
       <div className="aces-geist border-t">
-        <Personae user={user} />
+        <Personae user={user} project={project} />
 
         <br/>
         <pre>
