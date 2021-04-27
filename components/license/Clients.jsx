@@ -23,14 +23,14 @@ export default function Clients({ user }) {
             <div className="rounded-tl-md bg-gray-200 bg-opacity-50 pt-4 pb-3 px-1">&nbsp;</div>
           </td>
           <td className="p-0">
-            <div className="rounded-tr-md md:rounded-none bg-gray-200 bg-opacity-50 p-3 pt-4">Nama &amp; Email</div>
+            <div className="rounded-tr-md md:rounded-none bg-gray-200 bg-opacity-50 p-3 pt-4">Klien</div>
           </td>
           <td className="w-40 hidden md:table-cell w-36 text-center p-0">
             <div className="rounded-tr-md bg-gray-200 bg-opacity-50 p-3 pt-4">Proyek Terakhir</div>
           </td>
         </tr>
       </thead>
-      <FakeRows />
+      {/* <FakeRows /> */}
       {clients.map(client => (
         <tbody key={client._id}>
           <tr
@@ -54,7 +54,7 @@ export default function Clients({ user }) {
                 {client.city}
               </div>
             </td>
-            <td className="hidden md:table-cell text-center text-gray-500 px-3 py-2">
+            <td className="hidden md:table-cell text-right text-gray-500 px-3 py-2">
               {client.projects[0].startDate}
             </td>
           </tr>
@@ -116,44 +116,44 @@ function FakeRows() {
 
 function ClientInfo({ client }) {
   return (
-    <table className="">
+    <table className="w-full">
       <tbody className="align-top">
         <tr>
-          <td className="w-20 text-gray-500 py-1">
+          <td className="w-20 text-gray-500 pb-2">
             Alamat:
           </td>
-          <td className="text-gray-700 py-1">
+          <td className="text-gray-700 pb-2">
             {client.address}
           </td>
         </tr>
-        <tr>
-          <td className="text-gray-500 py-1">
+        <tr className="border-t border-gray-200">
+          <td className="text-gray-500 py-2">
             Kota:
           </td>
-          <td className="text-gray-700 py-1">
+          <td className="text-gray-700 py-2">
             {client.city}
           </td>
         </tr>
-        <tr>
-          <td className="text-gray-500 py-1">
+        <tr className="border-t border-gray-200">
+          <td className="text-gray-500 py-2">
             Telepon:
           </td>
-          <td className="text-gray-700 py-1">
+          <td className="text-gray-700 py-2">
             {client.phone}
           </td>
         </tr>
-        <tr>
-          <td className="text-gray-500 py-1">
+        <tr className="border-t border-gray-200">
+          <td className="text-gray-500 py-2">
             Proyek:
           </td>
-          <td className="py-1">
+          <td className="py-2">
             {client.projects.map(project => <div key={project._id}>
               <Link href={`/projects/${project._id}`}>
                 <a className="text-blue-500 hover:text-blue-600 leading-relaxed">
                   {project.title}
                   {project.startDate && (
-                    <span className="ml-3">
-                      ({project.startDate.substr(0, 4)})
+                    <span className="float-right ml-8">
+                      {project.startDate}
                     </span>
                   )}
                 </a>

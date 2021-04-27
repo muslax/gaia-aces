@@ -88,6 +88,7 @@ const Hero = ({ user, isLoading }) => {
                 <div className="w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28 rounded-full bg-gray-100 shadow-sm">
                   {user && user.licenseLogoUrl && (
                     <img
+                      id="licenseLogo"
                       src={user.licenseLogoUrl}
                       width='100%'
                       height='100%'

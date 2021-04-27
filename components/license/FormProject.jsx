@@ -1,21 +1,26 @@
 import { Listbox, Transition } from "@headlessui/react";
 import { CheckIcon, SelectorIcon } from "@heroicons/react/solid";
 import { ROUTES } from "config/routes";
+import useSimpleClients from "hooks/useSimpleClients";
+import fetchJson from "lib/fetchJson";
 import Link from "next/link";
-import { Fragment, useState } from "react";
+import { useRouter } from "next/router";
+import { Fragment, useEffect, useState } from "react";
 import { mutate } from "swr";
 import Heading from "./Heading";
 
-const people = [
-  { name: "Wade Cooper" },
-  { name: "Arlene Mccoy" },
-  { name: "Devon Webb" },
-  { name: "Tom Cook" },
-  { name: "Tanya Fox" },
-  { name: "Hellen Schmidt" },
-];
 
 export default function FormProject({ user }) {
+  const router = useRouter();
+
+  const { clients, isLoading } = useSimpleClients()
+  const [clientOptions, setClientOptions] = useState([{
+    _id: '',
+    orgName: '- New Client',
+    address: '',
+    city: ''
+  }])
+
   const [submitting, setSubmitting] = useState(false);
   const [title, setTitle] = useState('');
   const [fullTitle, setFullTitle] = useState('');
@@ -28,13 +33,38 @@ export default function FormProject({ user }) {
   const [clientCity, setClientCity] = useState('');
   const [clientAddress, setClientAddress] = useState('');
 
-  const [selected, setSelected] = useState(people[0]);
+  const [selected, setSelected] = useState(clientOptions[0]);
+
+  useEffect(() => {
+    if (!clients) return;
+    let array = clientOptions;
+    clients.forEach(client => {
+      array.push( client )
+    });
+
+    setClientOptions(array);
+    setSelected(clientOptions[0]);
+  }, [clients]);
+
+  useEffect(() => {
+    setClientId(selected._id)
+    setClientName(selected._id ? selected.orgName : '')
+    setClientCity(selected.city)
+    setClientAddress(selected.address)
+  }, [selected])
+
+  if (isLoading) return <></>;
+
+  function setClient(e) {
+    const val = e.target.value;
+    setSelected(val);
+  }
 
   async function SubmitProject(e) {
     e.preventDefault();
     setSubmitting(true);
 
-    const url = "/api/post?q=new-project"
+    const url = clientId ? '/api/post?q=new-client-project' : '/api/post?q=new-project';
     const response = await fetchJson(url, {
       method: 'POST',
       headers: { 'Content-type': 'application/json' },
@@ -61,6 +91,7 @@ export default function FormProject({ user }) {
     if (response) {
       setSubmitting(false);
       mutate('/api/get?q=get-projects');
+      router.push(ROUTES.Dashboard);
     }
   }
 
@@ -157,7 +188,7 @@ export default function FormProject({ user }) {
           <>
             <div className="relative mt-1">
               <Listbox.Button className="relative w-full py-2 pl-3 pr-10 text-left bg-white rounded border border-gray-300 shadow-sm cursor-default focus:outline-none focus-visible:ring-2 focus-visible:ring-opacity-75 focus-visible:ring-white focus-visible:ring-offset-orange-300 focus-visible:ring-offset-2 focus-visible:border-indigo-500 sm:text-sm">
-                <span className="block truncate">{selected.name}</span>
+                <span className="block truncate">{selected.orgName}</span>
                 <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
                   <SelectorIcon
                     className="w-5 h-5 text-gray-400"
@@ -176,7 +207,7 @@ export default function FormProject({ user }) {
                   static
                   className="absolute w-full py-1 mt-1 overflow-auto text-base bg-white rounded-md shadow-lg max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
                 >
-                  {people.map((person, personIdx) => (
+                  {clientOptions.map((person, personIdx) => (
                     <Listbox.Option
                       key={personIdx}
                       className={({ active }) =>
@@ -196,7 +227,7 @@ export default function FormProject({ user }) {
                               selected ? "font-medium" : "font-normal"
                             } block truncate`}
                           >
-                            {person.name}
+                            {person.orgName}
                           </span>
                           {selected ? (
                             <span
@@ -235,6 +266,7 @@ export default function FormProject({ user }) {
               <input type="text"
                 className={input}
                 value={clientName}
+                disabled={clientId}
                 onChange={e => setClientName(e.target.value)}
               />
             </td>
@@ -245,6 +277,7 @@ export default function FormProject({ user }) {
               <input type="text"
                 className={input}
                 value={clientAddress}
+                disabled={clientId}
                 onChange={e => setClientAddress(e.target.value)}
               />
             </td>
@@ -255,6 +288,7 @@ export default function FormProject({ user }) {
               <input type="text"
                 className={input}
                 value={clientCity}
+                disabled={clientId}
                 onChange={e => setClientCity(e.target.value)}
               />
             </td>
@@ -275,6 +309,8 @@ export default function FormProject({ user }) {
         </tbody>
       </table>
     </div>
+    {/* <pre> {JSON.stringify(selected, null, 2)} </pre> */}
+    {/* <pre> {JSON.stringify(clientOptions, null, 2)} </pre> */}
     <style jsx>
       {`
       .progress {

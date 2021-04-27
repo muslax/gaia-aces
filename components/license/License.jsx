@@ -1,10 +1,6 @@
-/**
- * Project listing: id, title, client, admin
- */
-
- import { useLicense } from "hooks/useLicense";
+import { useLicense } from "hooks/useLicense";
 import Link from "next/link";
- import Heading from "./Heading";
+import Heading from "./Heading";
 
 export default function License({ user }) {
   const { license, isError, isLoading } = useLicense();
@@ -13,7 +9,7 @@ export default function License({ user }) {
 
   return <>
     <Heading title="License Info">
-      {user.licenseOwner && <Link href="/new-user">
+      {user.licenseOwner && <Link href="/upload">
         <a className="inline-flex items-center bg-white shadow-sm hover:shadow rounded-sm px-4 h-8 border border-plum-500 hover:border-plum-600 text-sm text-plum-600 font-semibold">
           Upload Logo
         </a>
@@ -44,9 +40,20 @@ export default function License({ user }) {
       description="Tanggal akhir masa berlaku"
       value={isLoading ? '...' : license.expiryDate.substr(0, 10)}
     />
+    {/* <div className="fixed w-full h-full top-0 left-0 flex items-center justify-center bg-plum-400 bg-opacity-20">
+      <div className="modal max-w-xl mx-auto rounded border border-gray-400 bg-white shadow">
+        <h3 className="text-xl mx-4 my-2">UPLOAD</h3>
+        <div className="progress rounded-b bg-gray-300 h-2"></div>
+      </div>
+    </div> */}
     <pre>
-      {JSON.stringify(license, null, 2)}
+      {/* {JSON.stringify(license, null, 2)} */}
     </pre>
+    <style jsx>{`
+    .modal {
+      min-width: 400px;
+    }
+    `}</style>
   </>;
 }
 

@@ -4,33 +4,8 @@ import { connect } from "lib/database";
 import withSession from "lib/session";
 import { createRandomPassword } from "lib/utils";
 
-const ACCEPTED_QUERIES = {};
 
-export default withSession(async (req, res) => {
-  const apiUser = req.session.get("user");
-
-  if (!apiUser || apiUser.isLoggedIn === false) {
-    return res.status(401).json({ message: 'Unauthorized' });
-  }
-
-  if (req.method !== 'POST') {
-    return res.status(405).json({ message: 'Method Not Allowed' });
-  }
-
-  const { q } = req.query;
-  console.log(new Date(), q);
-
-  if (!q || !ACCEPTED_QUERIES[q]) {
-    return res.status(400).json({ message: 'Bad Request' })
-  }
-
-  const task = ACCEPTED_QUERIES[q];
-  return task (apiUser, req, res);
-});
-
-
-
-ACCEPTED_QUERIES['disable-user'] = async(apiUser, req, res) => {
+const disableUser = async(apiUser, req, res) => {
   console.log("disable-user")
   try {
     const id = req.body.id;
@@ -55,7 +30,7 @@ ACCEPTED_QUERIES['disable-user'] = async(apiUser, req, res) => {
 }
 
 
-ACCEPTED_QUERIES['activate-user'] = async(apiUser, req, res) => {
+const activateUser = async(apiUser, req, res) => {
   console.log("activate-user")
   try {
     const id = req.body.id;
@@ -80,15 +55,7 @@ ACCEPTED_QUERIES['activate-user'] = async(apiUser, req, res) => {
 }
 
 
-/**
- * Delete user: set deleted property to true
- * @param {*} apiUser
- * @param {*} req
- * @param {*} res
- * @returns
- */
-ACCEPTED_QUERIES['delete-user'] =
-async(apiUser, req, res) => {
+const deleteUser = async(apiUser, req, res) => {
   console.log("delete-user")
   try {
     const id = req.body.id;
@@ -96,7 +63,7 @@ async(apiUser, req, res) => {
     const rs = await db.collection(DB.Users).findOneAndUpdate(
       { _id: id },
       { $set: {
-        disabled: true, 
+        disabled: true,
         deleted: true,
         updatedAt: new Date()
       }}
@@ -114,7 +81,7 @@ async(apiUser, req, res) => {
 }
 
 
-ACCEPTED_QUERIES['reset-user'] = async(apiUser, req, res) => {
+const resetUser = async(apiUser, req, res) => {
   console.log("reset-user")
   try {
     const id = req.body.id;
@@ -150,7 +117,7 @@ ACCEPTED_QUERIES['reset-user'] = async(apiUser, req, res) => {
 }
 
 
-ACCEPTED_QUERIES['change-password'] = async(apiUser, req, res) => {
+const changePassword = async(apiUser, req, res) => {
   console.log("change-password")
   try {
     const id = apiUser._id;
@@ -179,9 +146,6 @@ ACCEPTED_QUERIES['change-password'] = async(apiUser, req, res) => {
         }
       },
     )
-
-    
-
     if (rs) {
       return res.json({
         ok: true,
@@ -196,7 +160,32 @@ ACCEPTED_QUERIES['change-password'] = async(apiUser, req, res) => {
 }
 
 
-ACCEPTED_QUERIES['new-user'] = async(apiUser, req, res) => {
+const uploadLogo = async(apiUser, req, res) => {
+  console.log('uploadLogo');
+  try {
+    const { db } = await connect();
+    const rs = await db.collection(DB.Licenses).findOneAndUpdate(
+      { _id: apiUser.licenseId },
+      { $set: {
+        logoUrl: req.body.imageUrl,
+        updatedAt: new Date()
+      }}
+    );
+
+    console.log('RS', rs);
+    const user = apiUser;
+    user['licenseLogoUrl'] = req.body.imageUrl;
+    console.log("user", user)
+    req.session.set("user", user);
+    await req.session.save();
+    return res.json({ message: 'Logo updated' });
+  } catch (error) {
+    return res.status(error.status || 500).end(error.message)
+  }
+}
+
+
+const newUser = async(apiUser, req, res) => {
   console.log("new-user")
   try {
     const { fullname, username, email } = req.body;
@@ -237,6 +226,148 @@ ACCEPTED_QUERIES['new-user'] = async(apiUser, req, res) => {
     return res.status(error.status || 500).end(error.message)
   }
 }
+
+
+const newClientProject = async(apiUser, req, res) => {
+  console.log('newClientProject')
+  console.log(req.body)
+  try {
+    const { db, client } = await connect();
+
+    const rs = await db.collection(DB.Projects).insertOne({
+      _id: ObjectID().toString(),
+      licenseId: req.body.licenseId,
+      clientId: req.body.clientId,
+      status: null,
+      batchMode: 'single',
+      title: req.body.title,
+      fullTitle: req.body.fullTitle,
+      description: req.body.description,
+      startDate: req.body.startDate,
+      endDate: req.body.endDate,
+      admin: apiUser.username,
+      contacts: [],
+      createdBy: apiUser.username,
+      createdAt: new Date()
+    })
+
+    if (rs) {
+      const project = rs.value;
+      console.log(project);
+      return res.json({ message: 'OK' })
+    }
+  } catch (error) {
+    return res.status(error.status || 500).end(error.message);
+  }
+}
+
+
+const newProject = async(apiUser, req, res) => {
+  console.log('newProject')
+  console.log(req.body)
+  const { db, client } = await connect();
+  const session = client.startSession();
+
+  try {
+    // const { db, client } = await connect();
+    // const session = client.startSession();
+    await session.withTransaction(async () => {
+      const clientId = ObjectID().toString();
+
+      const client = await db.collection(DB.Clients).insertOne({
+        _id: clientId,
+        licenseId: req.body.licenseId,
+        orgName: req.body.clientName,
+        address: req.body.clientAddress,
+        city: req.body.clientCity,
+        phone: null,
+        contacts: [],
+        createdBy: apiUser.username,
+        createdAt: new Date()
+      });
+      console.log(client);
+
+      const projectId = ObjectID().toString();
+      const project = await db.collection(DB.Projects).insertOne({
+        _id: projectId,
+        licenseId: req.body.licenseId,
+        clientId: clientId,
+        status: null,
+        batchMode: 'single',
+        title: req.body.title,
+        fullTitle: req.body.fullTitle,
+        description: req.body.description,
+        startDate: req.body.startDate,
+        endDate: req.body.endDate,
+        admin: apiUser.username,
+        contacts: [],
+        createdBy: apiUser.username,
+        createdAt: new Date()
+      });
+      console.log(project);
+
+      const batchId = ObjectID().toString();
+      const batch = await db.collection(DB.Batches).insertOne({
+        _id: batchId,
+        projectId: projectId,
+        batchName: 'Default Batch',
+        accessCode: null,
+        modules: [],
+        dateOpen: null,
+        dateClosed: null,
+        disabled: false,
+        createdBy: 'system',
+        createdAt: new Date()
+      });
+      console.log(batch);
+      return res.json({ message: 'OK' });
+    })
+
+    // console.log('Responding...');
+    // res.json({ message: 'OK' });
+  } catch (error) {
+    return res.status(error.status || 500).end(error.message);
+  } finally {
+    await session.endSession();
+    // await client.close();
+  }
+}
+
+
+const ACCEPTED_QUERIES = {};
+
+ACCEPTED_QUERIES['disable-user']        = disableUser;
+ACCEPTED_QUERIES['activate-user']       = activateUser;
+ACCEPTED_QUERIES['delete-user']         = deleteUser;
+ACCEPTED_QUERIES['reset-user']          = resetUser;
+ACCEPTED_QUERIES['change-password']     = changePassword;
+ACCEPTED_QUERIES['new-user']            = newUser;
+ACCEPTED_QUERIES['new-project']         = newProject;
+ACCEPTED_QUERIES['new-client-project']  = newClientProject;
+ACCEPTED_QUERIES['update-logo']         = uploadLogo;
+
+
+export default withSession(async (req, res) => {
+  const apiUser = req.session.get("user");
+
+  if (!apiUser || apiUser.isLoggedIn === false) {
+    return res.status(401).json({ message: 'Unauthorized' });
+  }
+
+  if (req.method !== 'POST') {
+    return res.status(405).json({ message: 'Method Not Allowed' });
+  }
+
+  const { q } = req.query;
+  console.log(new Date(), q);
+
+  if (!q || !ACCEPTED_QUERIES[q]) {
+    return res.status(400).json({ message: 'Bad Request' })
+  }
+
+  const task = ACCEPTED_QUERIES[q];
+  return task (apiUser, req, res);
+});
 
 
 const TestUpdateSession = async(apiUser, req, res) => {
