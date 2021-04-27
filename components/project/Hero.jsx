@@ -1,58 +1,27 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import SelectBatch from "./SelectBatch"
 
-export const Hero = ({ project, title, store }) => {
-  // const { currentBatch, setCurrentBatch } = store();
-  const currentBatch = store(state => state.currentBatch);
-  const setCurrentBatch = store(state => state.setCurrentBatch);
+function getSelectedBatch(project) {
+  const lsBatch = window.localStorage.getItem("batch");
+  let selectedBatch = null;
 
-  const [selected, setSelected] = useState(null);
-  const lsBatch = window.localStorage.getItem('batch');
-
-  window.localStorage.setItem('project', project._id);
-  const activeBatch = window.localStorage.getItem('batch');
-
-  if (activeBatch == undefined || activeBatch == "") {
-    window.localStorage.setItem('batch', project.batches[0]["_id"]);
-    setSelected(project.batches[0]);
-    setCurrentBatch(project.batches[0]['_id'])
-  } else {
-    let validBatch = false;
-    project.batches.forEach(bacth => {
-      if (bacth._id == activeBatch) {
-        validBatch = true;
-      }
-    })
-
-    if (!validBatch) {
-      window.localStorage.setItem('batch', project.batches[0]["_id"]);
-      setSelected(project.batches[0]);
-      setCurrentBatch(project.batches[0]['_id'])
+  project.batches.forEach(b => {
+    if (b._id == lsBatch) {
+      selectedBatch = b;
     }
-  }
+  })
+  return selectedBatch;
+}
 
-  useEffect(() => {
-    project.batches.forEach(batch => {
-      if (batch._id == lsBatch) {
-        setSelected(batch);
-        setCurrentBatch(batch._id)
-      }
-    });
-  }, [lsBatch])
-
-  useEffect(() => {
-    if (selected) {
-      window.localStorage.setItem('batch', selected._id);
-    }
-  }, [selected])
-
+export const Hero = ({ project, title, isIndex = false }) => {
+  const [selected, setSelected] = useState(getSelectedBatch(project));
+  
   if (!selected) return null;
 
   function setActiveBatch(e) {
     const id = e._id;
     setSelected(e);
     window.localStorage.setItem('batch', id);
-    setCurrentBatch(id)
   }
 
 
@@ -68,11 +37,21 @@ export const Hero = ({ project, title, store }) => {
         </div>
         <div className="text-center md:text-left">
           <div className="inline-block text-left">
-            <SelectBatch
-              batches={project.batches}
-              value={selected}
-              onChange={setActiveBatch}
-            />
+            {!isIndex && (
+              <div className="relative w-full py-1s pl-3 pr-8 text-left bg-white rounded border border-gray-300 shadow-sm cursor-default focus:outline-none focus-visible:ring-2 focus-visible:ring-opacity-75 focus-visible:ring-white focus-visible:ring-offset-orange-300 focus-visible:ring-offset-2 focus-visible:border-indigo-500 text-sm">
+                <div className="flex">
+                  <span className="py-1 pr-2 border-r">Batch</span>
+                  <span className="py-1 pl-2 block truncate text-red-500 font-semibold">{selected.batchName}</span>
+                </div>
+              </div>
+            )}
+            {isIndex && (
+              <SelectBatch
+                batches={project.batches}
+                value={selected}
+                onChange={setActiveBatch}
+              />
+            )}
           </div>
         </div>
       </div>

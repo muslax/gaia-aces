@@ -2,6 +2,7 @@
 
 # dev
 dev*.*
+/tmp
 
 # dependencies
 /node_modules

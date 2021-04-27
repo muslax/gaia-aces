@@ -5,19 +5,13 @@ import useUser from "hooks/useUser";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import useProjectHeader from "hooks/useProjectHeader";
-import create from "zustand";
-
-const useStore = create((set, get) =>({
-  currentBatch: "LOBAK",
-  setCurrentBatch: (_batch) => set((state) => ({ currentBatch: _batch }))
-}))
 
 const ProjectPage = () => {
   const { user } = useUser();
   const router = useRouter();
   const { pid } = router.query;
-  console.log('PID', pid)
   const { project, isLoading, isError } = useProjectHeader(pid);
+  const currentBatch = window.localStorage.getItem("batch");
 
   if (isLoading) return <></>;
   if (isError) { router.push('/not-found') }
@@ -28,25 +22,14 @@ const ProjectPage = () => {
       <title>ACES - Project Deployment</title>
     </Head>
 
-    <Hero project={project} title="Deployment" store={useStore} />
+    <Hero project={project} title="Deployment" />
 
     <div className="aces-wrap pb-28">
       <div className="aces-geist border-t">
-
-      {/* <pre>
-        PROJECT: {window.localStorage.getItem('project')}<br/>
-        BATCH  : {window.localStorage.getItem('batch')}
-      </pre> */}
-
-      <br/>
-      <pre>
-        {JSON.stringify(project, null, 2)}<br/>
-        {/* {JSON.stringify(batch, null, 2)}<br/> */}
-      </pre>
-
-
-
-      </div>
+        <pre>
+          {JSON.stringify(project, null, 2)}<br/>
+          {/* {JSON.stringify(batch, null, 2)}<br/> */}
+        </pre>      </div>
     </div>
   </>;
 }

@@ -2,7 +2,7 @@ import useUsernames from 'hooks/useUsernames';
 import { useEffect, useState } from 'react';
 import SelectUser from './SelectUser';
 
-const Info = ({ user, project, store }) => {
+const Info = ({ user, project }) => {
   // const { currentBatch, setCurrentBatch } = store();
 
   const { users, isLoading, isError } = useUsernames();
@@ -116,6 +116,8 @@ const Info = ({ user, project, store }) => {
             <BtnAdmin label="Edit Info" onClick={e => setForm('edit-info')} />
           </div>
         )}
+        {/* <Row label="Batch" content={window.localStorage.getItem('batch')} /> */}
+        <Row label="ID Proyek" content={project._id} />
         <Row label="Judul" content={project.title} />
         <Row label="Judul lengkap" content={project.fullTitle} />
         <Row label="Deskripsi" content={project.description} truncate/>

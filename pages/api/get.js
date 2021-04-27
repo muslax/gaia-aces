@@ -263,6 +263,58 @@ const getBatch = async(req, res) => {
 }
 
 
+const getModulesMeta = async(req, res) => {
+  try {
+    const { db } = await connect();
+    const rs = await db.collection(DB.ModulesMeta).find().toArray();
+    return res.json(rs)
+  } catch (error) {
+    return res.status(error.status || 500).end(error.message)
+  }
+}
+
+
+const getBatchPersonae = async(req, res) => {
+  console.log('getBatchPersonae', req.query);
+  try {
+    const { bid } = req.query;
+    console.log('batchId', bid);
+    const { db } = await connect();
+    const rs = await db.collection(DB.Personae).find(
+      { batchId: bid },
+      { projection: {
+        // _id: 1,
+        // licenseId: 1,
+        // projectId: 1,
+        // batchId: 1,
+        disabled: 1,
+        username: 1,
+        email: 1,
+        fullname: 1,
+        gender: 1,
+        birth: 1,
+        phone: 1,
+        nip: 1,
+        position: 1,
+        currentLevel: 1,
+        targetLevel: 1,
+        simGroup: 1,
+        tests: 1,
+        sims:  1,
+        simsPerformed: 1,
+        _tests: {$size: '$tests'},
+        _sims: {$size: '$sims'},
+        _testsPerformed: {$size: '$testsPerformed'},
+        _simsPerformed: {$size: '$simsPerformed'},
+      }}
+    ).toArray();
+    return res.json(rs);
+  } catch (error) {
+    return res.status(error.status || 500).end(error.message)
+  }
+}
+
+
 const XXXXX = async(req, res) => {
   try {
     const { db } = await connect();
@@ -275,15 +327,17 @@ const XXXXX = async(req, res) => {
 
 const ACCEPTED_QUERIES = {};
 
-ACCEPTED_QUERIES['get-license']   = GetLicense;
-ACCEPTED_QUERIES['get-projects']  = GetProjects;
-ACCEPTED_QUERIES['get-clients']   = GetClients;
-ACCEPTED_QUERIES['get-simple-clients']   = GetSimpleClients;
-ACCEPTED_QUERIES['get-users']     = GetUsers;
-ACCEPTED_QUERIES['get-usernames']     = GetUsernames;
-ACCEPTED_QUERIES['get-project-header'] = getProjectHeader;
-ACCEPTED_QUERIES['get-project'] = getProject;
-ACCEPTED_QUERIES['get-batch']   = getBatch;
+ACCEPTED_QUERIES['get-license']         = GetLicense;
+ACCEPTED_QUERIES['get-projects']        = GetProjects;
+ACCEPTED_QUERIES['get-clients']         = GetClients;
+ACCEPTED_QUERIES['get-simple-clients']  = GetSimpleClients;
+ACCEPTED_QUERIES['get-users']           = GetUsers;
+ACCEPTED_QUERIES['get-usernames']       = GetUsernames;
+ACCEPTED_QUERIES['get-project-header']  = getProjectHeader;
+ACCEPTED_QUERIES['get-project']         = getProject;
+ACCEPTED_QUERIES['get-batch']           = getBatch;
+ACCEPTED_QUERIES['get-modules-meta']    = getModulesMeta;
+ACCEPTED_QUERIES['get-batch-personae']  = getBatchPersonae;
 
 
 
