@@ -15,15 +15,15 @@ export default async (req, res) => {
     const sechedules = await db.collection(DB.Schedules).find().toArray();
 
     return res.json({
-      // modules_meta,
-      // licenses,
+      modules_meta,
+      licenses,
       users,
       clients,
-      // projects,
-      // batches,
-      // guests,
-      // personae,
-      // sechedules,
+      projects,
+      batches,
+      guests,
+      personae,
+      sechedules,
     })
   } catch (error) {
     return res.status(error.status || 500).end(error.message);
