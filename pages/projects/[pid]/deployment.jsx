@@ -5,6 +5,12 @@ import useUser from "hooks/useUser";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import useProjectHeader from "hooks/useProjectHeader";
+import create from "zustand";
+
+const useStore = create((set, get) =>({
+  currentBatch: "LOBAK",
+  setCurrentBatch: (_batch) => set((state) => ({ currentBatch: _batch }))
+}))
 
 const ProjectPage = () => {
   const { user } = useUser();
@@ -22,7 +28,7 @@ const ProjectPage = () => {
       <title>ACES - Project Deployment</title>
     </Head>
 
-    <Hero project={project} title="Deployment" />
+    <Hero project={project} title="Deployment" store={useStore} />
 
     <div className="aces-wrap pb-28">
       <div className="aces-geist border-t">

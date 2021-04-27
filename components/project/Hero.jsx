@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react"
 import SelectBatch from "./SelectBatch"
 
-export const Hero = ({ project, title }) => {
+export const Hero = ({ project, title, store }) => {
+  // const { currentBatch, setCurrentBatch } = store();
+  const currentBatch = store(state => state.currentBatch);
+  const setCurrentBatch = store(state => state.setCurrentBatch);
+
   const [selected, setSelected] = useState(null);
   const lsBatch = window.localStorage.getItem('batch');
 
@@ -11,6 +15,7 @@ export const Hero = ({ project, title }) => {
   if (activeBatch == undefined || activeBatch == "") {
     window.localStorage.setItem('batch', project.batches[0]["_id"]);
     setSelected(project.batches[0]);
+    setCurrentBatch(project.batches[0]['_id'])
   } else {
     let validBatch = false;
     project.batches.forEach(bacth => {
@@ -22,6 +27,7 @@ export const Hero = ({ project, title }) => {
     if (!validBatch) {
       window.localStorage.setItem('batch', project.batches[0]["_id"]);
       setSelected(project.batches[0]);
+      setCurrentBatch(project.batches[0]['_id'])
     }
   }
 
@@ -29,6 +35,7 @@ export const Hero = ({ project, title }) => {
     project.batches.forEach(batch => {
       if (batch._id == lsBatch) {
         setSelected(batch);
+        setCurrentBatch(batch._id)
       }
     });
   }, [lsBatch])
@@ -45,6 +52,7 @@ export const Hero = ({ project, title }) => {
     const id = e._id;
     setSelected(e);
     window.localStorage.setItem('batch', id);
+    setCurrentBatch(id)
   }
 
 

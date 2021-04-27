@@ -2,7 +2,9 @@ import useUsernames from 'hooks/useUsernames';
 import { useEffect, useState } from 'react';
 import SelectUser from './SelectUser';
 
-const Info = ({ user, project }) => {
+const Info = ({ user, project, store }) => {
+  // const { currentBatch, setCurrentBatch } = store();
+
   const { users, isLoading, isError } = useUsernames();
   const [selected, setSelected] = useState(null);
   const [form, setForm] = useState(null);
@@ -39,6 +41,7 @@ const Info = ({ user, project }) => {
 
 
   return <>
+    {/* <div>BATCH {currentBatch}</div> */}
     {form === 'add-batch' && <>
       <div className="flex flex-col md:flex-row items-center h-auto md:h-16 py-4 md:py-0 border-b border-gray-300">
         <h3 className="text-lgs font-semibold mb-3 md:mb-0">Add new batch</h3>
