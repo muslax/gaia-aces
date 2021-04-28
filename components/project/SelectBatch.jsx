@@ -19,7 +19,7 @@ export default function SelectBatch({ batches, value, onChange }) {
                 <Listbox.Button className="relative w-full py-1s pl-3 pr-8 text-left bg-white rounded border border-gray-300 shadow-sm cursor-default focus:outline-none focus-visible:ring-2 focus-visible:ring-opacity-75 focus-visible:ring-white focus-visible:ring-offset-orange-300 focus-visible:ring-offset-2 focus-visible:border-indigo-500 text-sm">
                   <div className="flex">
                     <span className="py-1 pr-2 border-r">Batch</span>
-                    <span className="py-1 pl-2 block truncate text-red-500 font-semibold">{selected?.batchName}</span>
+                    <span className="py-1 pl-2 block truncate text-gray-700 font-semibold">{selected?.batchName}</span>
                   </div>
                   <span className="absolute inset-y-0 right-0 flex items-center pr-1 pointer-events-none">
                     <SelectorIcon

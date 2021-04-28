@@ -334,6 +334,98 @@ const newProject = async(apiUser, req, res) => {
 }
 
 
+const changeAdmin = async(apiUser, req, res) => {
+  console.log("change-admin")
+  try {
+    const { id, username } = req.body;
+    console.log(id, username);
+    const { db } = await connect();
+    const rs = await db.collection(DB.Projects).findOneAndUpdate(
+      { _id: id },
+      { $set: {
+        admin: username,
+        updatedAt: new Date()
+      }}
+    )
+
+    if (rs) {
+      console.log(rs);
+      return res.json({ message: 'Admin changed' });
+    } else {
+      return res.status(404).json({ message: 'Project not found' })
+    }
+  } catch (error) {
+    return res.status(error.status || 500).end(error.message)
+  }
+}
+
+
+const saveDeployment = async(apiUser, req, res) => {
+  console.log("save-deployment")
+  try {
+    const {
+      code,
+      openDate,
+      openTime,
+      closeDate,
+      closeTime,
+      batchId,
+    } = req.body;
+    const dateOpen = `${openDate}T${openTime}:00.000+0700`;
+    const dateClosed = `${closeDate}T${closeTime}:00.000+0700`;
+    const { db } = await connect();
+    const rs = await db.collection(DB.Batches).findOneAndUpdate(
+      { _id: batchId },
+      { $set: {
+        accessCode: code,
+        dateOpen: new Date(dateOpen),
+        dateClosed: new Date(dateClosed),
+        updatedAt: new Date()
+      }}
+    )
+
+    console.log(rs);
+    if (rs) {
+      return res.json({ message: 'Deployment saved' });
+    } else {
+      return res.status(404).json({ message: 'Not found' })
+    }
+  } catch (error) {
+    return res.status(error.status || 500).end(error.message)
+  }
+}
+
+
+const addBatch = async(apiUser, req, res) => {
+  console.log('addBatch')
+  try {
+    const user = req.session.get("user");
+    const {projectId, batchName} = req.body;
+    const { db } = await connect();
+    const rs = await db.collection(DB.Batches).insertOne({
+      _id: ObjectID().toString(),
+      projectId: projectId,
+      batchName: batchName,
+      accessCode: null,
+      modules: [],
+      dateOpen: null,
+      dateClosed: null,
+      disabled: false,
+      createdBy: user.username,
+      createdAt: new Date()
+    });
+
+    if (rs) {
+      const batch = rs.value;
+      console.log(batch);
+      return res.json({ message: 'OK' })
+    }
+  } catch (error) {
+    return res.status(error.status || 500).end(error.message);
+  }
+}
+
+
 const ACCEPTED_QUERIES = {};
 
 ACCEPTED_QUERIES['disable-user']        = disableUser;
@@ -345,6 +437,9 @@ ACCEPTED_QUERIES['new-user']            = newUser;
 ACCEPTED_QUERIES['new-project']         = newProject;
 ACCEPTED_QUERIES['new-client-project']  = newClientProject;
 ACCEPTED_QUERIES['update-logo']         = uploadLogo;
+ACCEPTED_QUERIES['change-admin']        = changeAdmin;
+ACCEPTED_QUERIES['add-batch']           = addBatch;
+ACCEPTED_QUERIES['save-deployment']     = saveDeployment;
 
 
 export default withSession(async (req, res) => {

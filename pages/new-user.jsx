@@ -9,7 +9,7 @@ const LicensePage = () => {
   const { user, isLoading, mutateUser } = useUser()
   const router = useRouter();
 
-  if (!user.licenseOwner) router.push(ROUTES.Users);
+  if (!user.licenseOwner || user.licenseType == 'personal') router.push(ROUTES.Users);
 
   if (isLoading || !user.licenseOwner) return null;
 

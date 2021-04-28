@@ -6,14 +6,14 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import useProjectHeader from "hooks/useProjectHeader";
 import ErrorPage from "components/project/Error";
+import Deployment from "components/project/Deployment";
 
 const ProjectPage = () => {
-  const htmlTitle = "ACES - Project Guests";
+  const htmlTitle = "ACES - User Access";
   const { user } = useUser();
   const router = useRouter();
   const { pid } = router.query;
   const { project, isLoading, isError } = useProjectHeader(pid);
-  // const currentBatch = window.localStorage.getItem("batch");
 
   if (isLoading) return <></>;
 
@@ -24,15 +24,12 @@ const ProjectPage = () => {
       <title>{htmlTitle}</title>
     </Head>
 
-    <Hero user={user} project={project} title="Guests" />
+    <Hero user={user} project={project} title="User Access" />
 
     <div className="aces-wrap pb-28">
       <div className="aces-geist border-t">
-        <br/>
-        <pre>
-          {JSON.stringify(project, null, 2)}<br/>
-          {/* {JSON.stringify(batch, null, 2)}<br/> */}
-        </pre>      </div>
+        {/* <Deployment user={user} project={project} /> */}
+      </div>
     </div>
   </>;
 }

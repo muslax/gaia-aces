@@ -2,6 +2,7 @@ import { API_ROUTES } from "config/routes";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import Image from 'next/image'
+import fetchJson from "lib/fetchJson";
 
 const { ACESGray } = require("components/ACESIcons");
 const { useLicense } = require("hooks/useLicense");

@@ -100,7 +100,7 @@ export default function Users({ user }) {
 
   return <>
     <Heading title="Daftar User">
-      {user.licenseOwner && <Link href="/new-user">
+      {user.licenseOwner && user.licenseType == 'corporate' && <Link href="/new-user">
         <a className="inline-flex items-center bg-white shadow-sm hover:shadow rounded-sm px-4 h-8 border border-plum-500 hover:border-plum-600 text-sm text-plum-600 font-semibold">
           Add User
         </a>
@@ -167,7 +167,7 @@ export default function Users({ user }) {
               <td className="py-2 pl-3 text-center">
                 &nbsp;
               </td>
-              <td colspan="2" className="px-3 py-2">
+              <td colSpan="2" className="px-3 py-2">
                 <div className="flex items-center">
                   <div className="flex-grow text-xs text-white">
                     {!person.disabled && (
