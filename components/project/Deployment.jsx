@@ -36,13 +36,13 @@ const Deployment = ({ user, project }) => {
       })
       setDeploymentReqs(array);
 
-      // set date
-      if (Date.parse(batch.dateOpen) !== NaN) {
+      if (batch.dateOpen !== null) {
         const date = new Date(batch.dateOpen);
         setOpenDate(date.toISOString().substr(0, 10));
         setOpenTime(date.toString().substr(16, 5));
       }
-      if (Date.parse(batch.dateClosed) !== NaN) {
+
+      if (batch.dateClosed !== null) {
         const date = new Date(batch.dateClosed);
         setCloseDate(date.toISOString().substr(0, 10));
         setCloseTime(date.toString().substr(16, 5));
@@ -238,6 +238,11 @@ const Deployment = ({ user, project }) => {
 
     <pre> {JSON.stringify(batch, null, 2)} </pre>
     {/* <pre> {JSON.stringify(deploymentReqs, null, 2)} </pre> */}
+    <style jsx>{`
+    input::placeholder {
+      color: #ccc;
+    }
+    `}</style>
   </>
 }
 

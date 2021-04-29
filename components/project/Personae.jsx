@@ -41,7 +41,7 @@ const Personae = ({ user, project }) => {
         >Import</a>
       </Link>
     </div>
-    <h3 className="text-xl font-bold mt-5s mb-1">Daftar peserta</h3>
+    {/* <h3 className="text-xl font-bold mt-5s mb-1">Daftar peserta</h3> */}
     <table className="w-full">
       <thead>
         <tr className="border-b">
