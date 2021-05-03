@@ -1,5 +1,6 @@
 import useBatch from "hooks/useBatch";
 import useModulesMeta from "hooks/useModulesMeta";
+import useWorkbook from "hooks/useWorkbook";
 import fetchJson from "lib/fetchJson";
 import { getLastVisitedBatchId } from "lib/storage";
 import Link from "next/link";
@@ -10,13 +11,14 @@ const { useState, useEffect } = require("react")
 const Modules = ({ user, project }) => {
   const batchId = getLastVisitedBatchId(project);
   const { batch, isError, isLoading } = useBatch(batchId);
-  const { modules, isError: metaError, isLoading: metaLoading } = useModulesMeta();
+  // const { modules, isError: metaError, isLoading: metaLoading } = useModulesMeta();
+  const { workbook, isError: workbookError, isLoading: workbookLoading } = useWorkbook();
   const [batchModules, setBatchModules] = useState([])
 
   useEffect(() => {
-    if (modules) {
+    if (workbook && batch) {
       const array = [];
-      modules.forEach(mod => {
+      workbook.modules.forEach(mod => {
         if (batch.modules.includes(mod._id)) {
           array.push(mod);
         }
@@ -25,11 +27,11 @@ const Modules = ({ user, project }) => {
       array.sort(function(a, b) { return a._id - b._id });
       setBatchModules(array);
     }
-  }, [modules])
+  }, [workbook])
 
-  if (isLoading || metaLoading) return <>...</>;
+  if (isLoading || workbookLoading) return <>...</>;
 
-  if (isError || metaError) return <ErrorPage title="something" code={batchId} message="Not Found" />
+  if (isError || workbookError) return <ErrorPage title="something" code={batchId} message="Not Found" />
 
   if (batch.modules.length == 0) return <BatchHasNoModule user={user} project={project} />
 
@@ -56,8 +58,8 @@ const Modules = ({ user, project }) => {
     ))}
     </table>
     {/* <pre>{JSON.stringify(batch, null, 2)}</pre> */}
-    {/* <pre>BATCH MODULES {JSON.stringify(batchModules, null, 2)}</pre> */}
-    {/* <pre>{JSON.stringify(modules, null, 2)}</pre> */}
+    <pre>BATCH MODULES {JSON.stringify(batchModules, null, 2)}</pre>
+    <pre>{JSON.stringify(workbook, null, 2)}</pre>
   </>;
 }
 

@@ -16,6 +16,19 @@ const GetLicense = async(req, res) => {
 }
 
 
+const GetWorkbook = async(req, res) => {
+  try {
+    const apiUser = req.session.get("user");
+    const { db } = await connect();
+    const rs = await db.collection(DB.Workbooks)
+      .find().limit(1).sort({ _id: -1 }).toArray();
+    if (rs) return res.json(rs[0]);
+  } catch (error) {
+    return res.status(error.status || 500).end(error.message)
+  }
+}
+
+
 const GetProjects = async(req, res) => {
   try {
     const apiUser = req.session.get("user");
@@ -383,6 +396,7 @@ ACCEPTED_QUERIES['get-batch']           = getBatch;
 ACCEPTED_QUERIES['get-modules-meta']    = getModulesMeta;
 ACCEPTED_QUERIES['get-batch-personae']  = getBatchPersonae;
 ACCEPTED_QUERIES['get-guided-modules']  = getGuidedModules;
+ACCEPTED_QUERIES['get-workbook']        = GetWorkbook;
 
 
 

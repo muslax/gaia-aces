@@ -12,7 +12,7 @@ const Info = ({ user, project }) => {
   const [form, setForm] = useState(null);
   const [modal, setModal] = useState(null)
 
-  const [title, setTitle] = useState('Annapurna');
+  const [title, setTitle] = useState(project.title);
   const [fullTitle, setFullTitle] = useState(project.fullTitle);
   const [description, setDescription] = useState(project.description);
   const [startDate, setStartDate] = useState(project.startDate);

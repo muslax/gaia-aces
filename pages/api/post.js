@@ -229,42 +229,55 @@ const newUser = async(apiUser, req, res) => {
 
 
 const newClientProject = async(apiUser, req, res) => {
-  console.log('newClientProject')
-  console.log(req.body)
+  const { db, client } = await connect();
+  const session = await client.startSession();
+  
   try {
-    const { db, client } = await connect();
+    await session.withTransaction(async () => {
+      const projectId = ObjectID().toString();
+      const rs = await db.collection(DB.Projects).insertOne({
+        _id: projectId,
+        licenseId: req.body.licenseId,
+        clientId: req.body.clientId,
+        status: null,
+        batchMode: 'single',
+        title: req.body.title,
+        fullTitle: req.body.fullTitle,
+        description: req.body.description,
+        startDate: req.body.startDate,
+        endDate: req.body.endDate,
+        admin: apiUser.username,
+        contacts: [],
+        createdBy: apiUser.username,
+        createdAt: new Date()
+      });
 
-    const rs = await db.collection(DB.Projects).insertOne({
-      _id: ObjectID().toString(),
-      licenseId: req.body.licenseId,
-      clientId: req.body.clientId,
-      status: null,
-      batchMode: 'single',
-      title: req.body.title,
-      fullTitle: req.body.fullTitle,
-      description: req.body.description,
-      startDate: req.body.startDate,
-      endDate: req.body.endDate,
-      admin: apiUser.username,
-      contacts: [],
-      createdBy: apiUser.username,
-      createdAt: new Date()
-    })
+      const batchId = ObjectID().toString();
+      const batch = await db.collection(DB.Batches).insertOne({
+        _id: batchId,
+        projectId: projectId,
+        batchName: 'Default Batch',
+        accessCode: null,
+        modules: [],
+        dateOpen: null,
+        dateClosed: null,
+        disabled: false,
+        createdBy: 'system',
+        createdAt: new Date()
+      });
 
-    if (rs) {
-      const project = rs.value;
-      console.log(project);
-      return res.json({ message: 'OK' })
-    }
+      return res.json({ message: 'OK' });
+    });
   } catch (error) {
     return res.status(error.status || 500).end(error.message);
+  } finally {
+    await session.endSession();
   }
 }
 
 
 const newProject = async(apiUser, req, res) => {
-  console.log('newProject')
-  console.log(req.body)
+  
   const { db, client } = await connect();
   const session = client.startSession();
 
