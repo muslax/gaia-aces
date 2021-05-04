@@ -13,7 +13,7 @@ const Personae = ({ user, project }) => {
 
   return <>
     <div className="flex items-center rounded-md bg-gray-100 px-3 py-3 -mt-1 mb-5">
-      <div className="flex-grow pr-3">
+      <div className="flex-grow pr-3s">
         <input
           type="text"
           placeholder="Search"
@@ -24,19 +24,21 @@ const Personae = ({ user, project }) => {
           onChange={e => setFilter(e.target.value)}
         />
       </div>
-      <Link href="#">
-        <a
-          className="block text-sm border px-3 py-1"
-          onClick={e => {
-            e.preventDefault()
-          }}
-        >Add</a>
-      </Link>
-      <Link href={`/projects/${project._id}/import-csv`}>
-        <a
-          className="block text-sm rounded border border-gray-300 hover:border-gray-400 hover:shadow-sm ml-3 px-3 py-1"
-        >Import CSV</a>
-      </Link>
+      {user.username == project.admin.username && <>
+        <Link href="#">
+          <a
+            className="block text-sm border px-3 py-1 ml-3 "
+            onClick={e => {
+              e.preventDefault()
+            }}
+          >Add</a>
+        </Link>
+        <Link href={`/projects/${project._id}/import-csv`}>
+          <a
+            className="block text-sm rounded border border-gray-300 hover:border-gray-400 hover:shadow-sm ml-3 px-3 py-1"
+          >Import CSV</a>
+        </Link>
+      </>}
     </div>
     {/* <h3 className="text-xl font-bold mt-5s mb-1">Daftar peserta</h3> */}
     <table className="w-full">

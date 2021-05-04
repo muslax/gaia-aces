@@ -39,11 +39,11 @@ const ProjectHeader = () => {
 
   // const normal = "block pt-1 pb-2 border-b-4 border-transparent hover:border-indigo-200 text-gray-500 hover:text-indigo-500"
   // const active = "block pt-1 pb-2 text-indigo-600 border-b-4 border-indigo-500 hover:text-indigo-600"
-  const normal = "block pt-2 pb-2 border-b-4 border-transparent hover:border-gray-200 text-gray-500 hover:text-green-600"
+  const normal = "block pt-2 pb-2 border-b-4 border-transparent hover:border-gray-300 text-gray-500 hover:text-green-600"
   const active = "block pt-2 pb-2 text-green-600 border-b-4 border-green-500 hover:text-green-600"
 
   return <>
-    <div id="page-nav" className="bg-white shadow-sms border-b border-gray-200 fixed w-full top-0 left-0 z-50">
+    <div id="page-nav" className="bg-white shadow-sms border-b border-gray-200 hover:border-gray-300 hover:shadow-sm fixed w-full top-0 left-0 z-50">
       <div className="aces-wrap">
         <div className="aces-geist py-4">
           <div className="flex h-7 items-center">

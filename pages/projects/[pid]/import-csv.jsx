@@ -20,6 +20,8 @@ const ProjectPage = () => {
 
   if (isError) return <ErrorPage title={htmlTitle} code={pid} message="Not Found" />
 
+  if (user.username != project.admin.username) router.push(`/projects/${project._id}/persona`);
+
   return <>
     <Head>
       <title>{htmlTitle}</title>

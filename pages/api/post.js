@@ -445,24 +445,38 @@ const addBatch = async(req, res) => {
 
 const saveModules = async(req, res) => {
   console.log('save-modules');
-  try {
-    const { batchId, modules } = req.body;
-    const { db } = await connect();
-    const rs = await db.collection(DB.Batches).findOneAndUpdate(
-      { _id: batchId },
-      { $set: {
-        modules: modules,
-        updatedAt: new Date()
-      }}
-    )
+  const { db, client } = await connect();
+  const session = await client.startSession();
+  const { batchId, modules, tests, sims } = req.body;
 
-    if (rs) {
-      return res.json({ message: 'Modules saved' });
-    } else {
-      return res.status(404).json({ message: 'Not found' })
-    }
+  try {
+    await session.withTransaction(async () => {
+      const batchRs = await db.collection(DB.Batches).findOneAndUpdate(
+        { _id: batchId },
+        { $set: {
+          modules: modules,
+          updatedAt: new Date()
+        }}
+      )
+      
+      console.log('BATCH RS', batchRs);
+
+      const personaRs = await db.collection(DB.Personae).updateMany(
+        { batchId: batchId },
+        { $set: {
+          tests: tests,
+          sims: sims,
+        }}
+      );
+
+      console.log(personaRs);
+
+      return res.json({ message: 'OK' });
+    });
   } catch (error) {
     return res.status(error.status || 500).end(error.message)
+  } finally {
+    session.endSession();
   }
 }
 
@@ -475,6 +489,10 @@ const saveCSVData = async(req, res) => {
     personae.forEach(person => {
       const doc = person;
       doc._id = ObjectID().toString();
+      const { password, xfpwd, hashed_password } = createRandomPassword();
+      // console.log(password, xfpwd);
+      doc.xfpwd = xfpwd;
+      doc.hashed_password = hashed_password;
       doc.createdAt = new Date();
       docs.push(doc);
     });

@@ -109,7 +109,7 @@ const Deployment = ({ user, project }) => {
 
     <h3 className="text-xl font-bold mb-2">Kode akses dan waktu</h3>
     <p className="text-sm text-gray-500 mb-2">
-      Waktu dalam WIB.
+      Waktu dalam WIB. {openDate}:{openTime} -- {closeDate}:{closeTime} {code}
     </p>
 
     <div className="w-auto border border-gray-300 pt-2 pb-2">

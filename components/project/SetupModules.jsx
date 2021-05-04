@@ -7,6 +7,7 @@ import fetchJson from "lib/fetchJson";
 import { getLastVisitedBatch, getLastVisitedBatchId } from "lib/storage";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { mutate } from "swr";
 import ErrorPage from "./Error";
 
 const SetupModules = ({ user, project }) => {
@@ -33,11 +34,25 @@ const SetupModules = ({ user, project }) => {
 
   async function saveModules(e) {
     setSubmitting(true);
+    const tests = [];
+    const sims = [];
+    workbook.modules.forEach(mod => {
+      if (selected.includes(mod.moduleId)) {
+        if (mod.method == 'selftest') {
+          tests.push(mod.moduleId);
+        } else if (mod.method == 'guided') {
+          sims.push(mod.moduleId);
+        }
+      }
+    })
     const body = {
       batchId: batch._id,
       modules: selected,
+      tests: tests,
+      sims: sims,
     };
-    console.log(body);
+    console.log('BODY', body);
+    // return;
     const res = fetchJson(API_ROUTES.SaveModules, {
       method: 'POST',
       headers: { 'Content-type': 'application/json' },
@@ -46,6 +61,7 @@ const SetupModules = ({ user, project }) => {
 
     if (res) {
       setSubmitting(false);
+      mutate(`/api/get?q=get-batch&bid=${batch._id}`);
       router.push(`/projects/${project._id}/modules`);
     }
   }
@@ -153,7 +169,7 @@ const SetupModules = ({ user, project }) => {
     <pre>
       {/* {JSON.stringify(batchRef, null, 2)}<br/> */}
       {/* {JSON.stringify(batch, null, 2)}<br/> */}
-      {/* WORKBOOK {JSON.stringify(workbook, null, 2)}<br/> */}
+      WORKBOOK {JSON.stringify(workbook, null, 2)}<br/>
     </pre>
   </>
 }

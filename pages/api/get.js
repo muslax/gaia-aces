@@ -330,7 +330,7 @@ const getGuidedModules = async(req, res) => {
   }
 }
 
-
+// Daftar persona dalam batch
 const getBatchPersonae = async(req, res) => {
   console.log('getBatchPersonae', req.query);
   try {
@@ -372,6 +372,28 @@ const getBatchPersonae = async(req, res) => {
 }
 
 
+const getBatchCredentials = async(req, res) => {
+  console.log('getBatchCredentials');
+  try {
+    const { bid } = req.query;
+    const { db } = await connect();
+    const rs = await db.collection(DB.Personae).find(
+      { batchId: bid },
+      { projection: {
+        batchId: 1,
+        fullname: 1,
+        username: 1,
+        email: 1,
+        xfpwd: 1,
+      }}
+    ).toArray();
+    return res.json(rs);
+  } catch (error) {
+    return res.status(error.status || 500).end(error.message)
+  }
+}
+
+
 const XXXXX = async(req, res) => {
   try {
     const { db } = await connect();
@@ -384,19 +406,20 @@ const XXXXX = async(req, res) => {
 
 const ACCEPTED_QUERIES = {};
 
-ACCEPTED_QUERIES['get-license']         = GetLicense;
-ACCEPTED_QUERIES['get-projects']        = GetProjects;
-ACCEPTED_QUERIES['get-clients']         = GetClients;
-ACCEPTED_QUERIES['get-simple-clients']  = GetSimpleClients;
-ACCEPTED_QUERIES['get-users']           = GetUsers;
-ACCEPTED_QUERIES['get-usernames']       = GetUsernames;
-ACCEPTED_QUERIES['get-project-header']  = getProjectHeader;
-ACCEPTED_QUERIES['get-project']         = getProject;
-ACCEPTED_QUERIES['get-batch']           = getBatch;
-ACCEPTED_QUERIES['get-modules-meta']    = getModulesMeta;
-ACCEPTED_QUERIES['get-batch-personae']  = getBatchPersonae;
-ACCEPTED_QUERIES['get-guided-modules']  = getGuidedModules;
-ACCEPTED_QUERIES['get-workbook']        = GetWorkbook;
+ACCEPTED_QUERIES['get-license']           = GetLicense;
+ACCEPTED_QUERIES['get-projects']          = GetProjects;
+ACCEPTED_QUERIES['get-clients']           = GetClients;
+ACCEPTED_QUERIES['get-simple-clients']    = GetSimpleClients;
+ACCEPTED_QUERIES['get-users']             = GetUsers;
+ACCEPTED_QUERIES['get-usernames']         = GetUsernames;
+ACCEPTED_QUERIES['get-project-header']    = getProjectHeader;
+ACCEPTED_QUERIES['get-project']           = getProject;
+ACCEPTED_QUERIES['get-batch']             = getBatch;
+ACCEPTED_QUERIES['get-modules-meta']      = getModulesMeta;
+ACCEPTED_QUERIES['get-batch-personae']    = getBatchPersonae;
+ACCEPTED_QUERIES['get-guided-modules']    = getGuidedModules;
+ACCEPTED_QUERIES['get-workbook']          = GetWorkbook;
+ACCEPTED_QUERIES['get-batch-credentials'] = getBatchCredentials;
 
 
 

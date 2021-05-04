@@ -7,9 +7,10 @@ import { useRouter } from "next/router";
 import useProjectHeader from "hooks/useProjectHeader";
 import ErrorPage from "components/project/Error";
 import Deployment from "components/project/Deployment";
+import Credentials from "components/project/Credentials";
 
 const ProjectPage = () => {
-  const htmlTitle = "ACES - User Access";
+  const htmlTitle = "ACES - Test Access";
   const { user } = useUser();
   const router = useRouter();
   const { pid } = router.query;
@@ -24,11 +25,11 @@ const ProjectPage = () => {
       <title>{htmlTitle}</title>
     </Head>
 
-    <Hero user={user} project={project} title="User Access" />
+    <Hero user={user} project={project} title="Test Access" />
 
     <div className="aces-wrap pb-28">
       <div className="aces-geist border-t">
-        {/* <Deployment user={user} project={project} /> */}
+        <Credentials user={user} project={project} />
       </div>
     </div>
   </>;
