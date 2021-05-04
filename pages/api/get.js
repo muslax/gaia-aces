@@ -16,6 +16,19 @@ const GetLicense = async(req, res) => {
 }
 
 
+const GetWorkbook = async(req, res) => {
+  try {
+    const apiUser = req.session.get("user");
+    const { db } = await connect();
+    const rs = await db.collection(DB.Workbooks)
+      .find().limit(1).sort({ _id: -1 }).toArray();
+    if (rs) return res.json(rs[0]);
+  } catch (error) {
+    return res.status(error.status || 500).end(error.message)
+  }
+}
+
+
 const GetProjects = async(req, res) => {
   try {
     const apiUser = req.session.get("user");
@@ -248,15 +261,48 @@ const getProject = async(req, res) => {
 }
 
 
+/**
+ * Return project batch with personae info
+ *
+ * @param {*} req
+ * @param {*} res
+ * @returns
+ */
 const getBatch = async(req, res) => {
+  console.log("getBatch");
   try {
     const apiUser = req.session.get("user");
     const { bid } = req.query;
     const { db } = await connect();
-    const rs = await db.collection(DB.Batches).findOne({ _id: bid })
+
+    // TODO: attach batch schedule info
+    const cursor = await db.collection(DB.Batches).aggregate([
+      { $match: { _id: bid }},
+      { $limit: 1 },
+      { $lookup: {
+        from: DB.Personae,
+        localField: '_id',
+        foreignField: 'batchId',
+        as: 'personae',
+      }},
+      { $project: {
+        projectId: 1,
+        batchName: 1,
+        accessCode: 1,
+        modules: 1,
+        dateOpen: 1,
+        dateClosed: 1,
+        disabled: 1,
+        createdBy: 1,
+        createdAt: 1,
+        personae: { $size: '$personae' }
+      }}
+    ]);
+
+    const rs = await cursor.next();
+    console.log(rs);
     if (!rs) return res.status(404).json({ message: 'Not found' })
     return res.json(rs)
-
   } catch (error) {
     return res.status(error.status || 500).end(error.message)
   }
@@ -266,7 +312,18 @@ const getBatch = async(req, res) => {
 const getModulesMeta = async(req, res) => {
   try {
     const { db } = await connect();
-    const rs = await db.collection(DB.ModulesMeta).find().toArray();
+    const rs = await db.collection(DB.ModulesMeta).find().sort({ order: 1 }).toArray();
+    return res.json(rs)
+  } catch (error) {
+    return res.status(error.status || 500).end(error.message)
+  }
+}
+
+
+const getGuidedModules = async(req, res) => {
+  try {
+    const { db } = await connect();
+    const rs = await db.collection(DB.ModulesMeta).find({ method: 'guided' }).sort({ order: 1 }).toArray();
     return res.json(rs)
   } catch (error) {
     return res.status(error.status || 500).end(error.message)
@@ -301,11 +358,11 @@ const getBatchPersonae = async(req, res) => {
         simGroup: 1,
         tests: 1,
         sims:  1,
-        simsPerformed: 1,
-        _tests: {$size: '$tests'},
-        _sims: {$size: '$sims'},
-        _testsPerformed: {$size: '$testsPerformed'},
-        _simsPerformed: {$size: '$simsPerformed'},
+        // simsPerformed: 1,
+        // _tests: {$size: '$tests'},
+        // _sims: {$size: '$sims'},
+        // _testsPerformed: {$size: '$testsPerformed'},
+        // _simsPerformed: {$size: '$simsPerformed'},
       }}
     ).toArray();
     return res.json(rs);
@@ -338,6 +395,8 @@ ACCEPTED_QUERIES['get-project']         = getProject;
 ACCEPTED_QUERIES['get-batch']           = getBatch;
 ACCEPTED_QUERIES['get-modules-meta']    = getModulesMeta;
 ACCEPTED_QUERIES['get-batch-personae']  = getBatchPersonae;
+ACCEPTED_QUERIES['get-guided-modules']  = getGuidedModules;
+ACCEPTED_QUERIES['get-workbook']        = GetWorkbook;
 
 
 

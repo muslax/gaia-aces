@@ -113,7 +113,7 @@ const LoginPage = () => {
 }
 
 LoginPage.suppressFirstRenderFlicker = false;
-LoginPage.redirectAuthenticatedTo = '/protected'; // ROUTES.Dashboard;
+LoginPage.redirectAuthenticatedTo = ROUTES.Dashboard;
 LoginPage.getLayout = (page) => <WebLayout>{page}</WebLayout>;
 
 export default LoginPage;

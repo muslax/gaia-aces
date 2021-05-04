@@ -6,34 +6,30 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import useProjectHeader from "hooks/useProjectHeader";
 import Personae from "components/project/Personae";
+import ErrorPage from "components/project/Error";
 
 const ProjectPage = () => {
+  const htmlTitle = "ACES - Project Personae";
   const { user } = useUser();
   const router = useRouter();
   const { pid } = router.query;
   const { project, isLoading, isError } = useProjectHeader(pid);
-  const currentBatch = window.localStorage.getItem("batch");
+  // const currentBatch = window.localStorage.getItem("batch");
 
   if (isLoading) return <></>;
-  if (isError) { router.push('/not-found') }
 
+  if (isError) return <ErrorPage title={htmlTitle} code={pid} message="Not Found" />
 
   return <>
     <Head>
-      <title>ACES - Project Personae</title>
+      <title>{htmlTitle}</title>
     </Head>
 
-    <Hero project={project} title="Personae" />
+    <Hero user={user} project={project} title="Personae" />
 
     <div className="aces-wrap pb-28">
       <div className="aces-geist border-t">
-        <Personae user={user} />
-
-        <br/>
-        <pre>
-          {JSON.stringify(project, null, 2)}<br/>
-          {/* {JSON.stringify(batch, null, 2)}<br/> */}
-        </pre>
+        <Personae user={user} project={project} />
       </div>
     </div>
   </>;
