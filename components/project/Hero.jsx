@@ -1,6 +1,6 @@
 import fetchJson from "lib/fetchJson";
 import { getBatchKey, getLastVisitedBatch } from "lib/storage";
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import useSWR from "swr";
 import SelectBatch from "./SelectBatch"
 
@@ -23,14 +23,19 @@ export const Hero = ({ user, project, title, isIndex = false }) => {
   const [batchUrl, setBatchUrl] = useState(null);
   const [workbookUrl, setWorkbookUrl] = useState(null);
 
+  useEffect(() => {
+    setWorkbookUrl('/api/get?q=get-workbook');
+    setBatchUrl(`/api/get?q=get-batch&bid=${selected._id}`);
+  }, [selected])
+
   if (!selected) return null;
 
   function setActiveBatch(e) {
     const id = e._id;
     setSelected(e);
     window.localStorage.setItem(batchKey, id);
-    setWorkbookUrl('/api/get?q=get-workbook');
-    setBatchUrl(`/api/get?q=get-batch&bid=${id}`);
+    // setWorkbookUrl('/api/get?q=get-workbook');
+    // setBatchUrl(`/api/get?q=get-batch&bid=${id}`);
   }
 
 
@@ -72,6 +77,7 @@ export const Hero = ({ user, project, title, isIndex = false }) => {
           </div>
         </div>
       </div>
+      <pre>{JSON.stringify(selected, null, 2)}</pre>
     </div>
   )
 }
@@ -83,5 +89,5 @@ const Prefetching = ({ url }) => {
 
   if (!data && !error) return <>-</>;
 
-  return <>&nbsp;</>;
+  return <>&gt;</>;
 }
