@@ -274,7 +274,8 @@ const getBatch = async(req, res) => {
     const apiUser = req.session.get("user");
     const { bid } = req.query;
     const { db } = await connect();
-    // const rs = await db.collection(DB.Batches).findOne({ _id: bid })
+
+    // TODO: attach batch schedule info
     const cursor = await db.collection(DB.Batches).aggregate([
       { $match: { _id: bid }},
       { $limit: 1 },
@@ -285,7 +286,6 @@ const getBatch = async(req, res) => {
         as: 'personae',
       }},
       { $project: {
-        // _id: '6086175d6940e60f2fd9d987',
         projectId: 1,
         batchName: 1,
         accessCode: 1,
@@ -358,11 +358,11 @@ const getBatchPersonae = async(req, res) => {
         simGroup: 1,
         tests: 1,
         sims:  1,
-        simsPerformed: 1,
-        _tests: {$size: '$tests'},
-        _sims: {$size: '$sims'},
-        _testsPerformed: {$size: '$testsPerformed'},
-        _simsPerformed: {$size: '$simsPerformed'},
+        // simsPerformed: 1,
+        // _tests: {$size: '$tests'},
+        // _sims: {$size: '$sims'},
+        // _testsPerformed: {$size: '$testsPerformed'},
+        // _simsPerformed: {$size: '$simsPerformed'},
       }}
     ).toArray();
     return res.json(rs);

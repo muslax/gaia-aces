@@ -32,13 +32,10 @@ const Personae = ({ user, project }) => {
           }}
         >Add</a>
       </Link>
-      <Link href="#">
+      <Link href={`/projects/${project._id}/import-csv`}>
         <a
-          className="block text-sm border ml-3 px-3 py-1"
-          onClick={e => {
-            e.preventDefault()
-          }}
-        >Import</a>
+          className="block text-sm rounded border border-gray-300 hover:border-gray-400 hover:shadow-sm ml-3 px-3 py-1"
+        >Import CSV</a>
       </Link>
     </div>
     {/* <h3 className="text-xl font-bold mt-5s mb-1">Daftar peserta</h3> */}
@@ -50,7 +47,7 @@ const Personae = ({ user, project }) => {
           </td>
         </tr>
       </thead>
-      {personae.filter(person => person.fullname.includes(filter)).map((person, index) => (
+      {personae.filter(person => person.fullname.toLowerCase().includes(filter)).map((person, index) => (
         <tbody key={person._id}>
           <tr className="border-b">
             <td className="w-10 p-2">{ index + 1}</td>
@@ -61,7 +58,7 @@ const Personae = ({ user, project }) => {
         </tbody>
       ))}
     </table>
-    {/* <pre>{JSON.stringify(personae, null, 2)}</pre> */}
+    <pre>{JSON.stringify(personae, null, 2)}</pre>
   </>;
 }
 

@@ -15,4 +15,6 @@ export const API_ROUTES = {
   Login: '/api/login',
   Logout: '/api/logout',
   GetUser: '/api/user',
+  SaveModules: '/api/post?q=save-modules',
+  SaveCSV: '/api/post?q=save-csv-data',
 }

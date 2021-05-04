@@ -5,7 +5,7 @@ import withSession from "lib/session";
 import { createRandomPassword } from "lib/utils";
 
 
-const disableUser = async(apiUser, req, res) => {
+const disableUser = async(req, res) => {
   console.log("disable-user")
   try {
     const id = req.body.id;
@@ -30,7 +30,7 @@ const disableUser = async(apiUser, req, res) => {
 }
 
 
-const activateUser = async(apiUser, req, res) => {
+const activateUser = async(req, res) => {
   console.log("activate-user")
   try {
     const id = req.body.id;
@@ -55,7 +55,7 @@ const activateUser = async(apiUser, req, res) => {
 }
 
 
-const deleteUser = async(apiUser, req, res) => {
+const deleteUser = async(req, res) => {
   console.log("delete-user")
   try {
     const id = req.body.id;
@@ -81,7 +81,7 @@ const deleteUser = async(apiUser, req, res) => {
 }
 
 
-const resetUser = async(apiUser, req, res) => {
+const resetUser = async(req, res) => {
   console.log("reset-user")
   try {
     const id = req.body.id;
@@ -117,8 +117,9 @@ const resetUser = async(apiUser, req, res) => {
 }
 
 
-const changePassword = async(apiUser, req, res) => {
+const changePassword = async(req, res) => {
   console.log("change-password")
+  const apiUser = req.session.get("user");
   try {
     const id = apiUser._id;
     const { oldPassword, newPassowrd } = req.body;
@@ -160,8 +161,9 @@ const changePassword = async(apiUser, req, res) => {
 }
 
 
-const uploadLogo = async(apiUser, req, res) => {
+const uploadLogo = async(req, res) => {
   console.log('uploadLogo');
+  const apiUser = req.session.get("user");
   try {
     const { db } = await connect();
     const rs = await db.collection(DB.Licenses).findOneAndUpdate(
@@ -185,8 +187,9 @@ const uploadLogo = async(apiUser, req, res) => {
 }
 
 
-const newUser = async(apiUser, req, res) => {
+const newUser = async(req, res) => {
   console.log("new-user")
+  const apiUser = req.session.get("user");
   try {
     const { fullname, username, email } = req.body;
     const { password, hashed_password, xfpwd } = createRandomPassword();
@@ -228,10 +231,11 @@ const newUser = async(apiUser, req, res) => {
 }
 
 
-const newClientProject = async(apiUser, req, res) => {
+const newClientProject = async(req, res) => {
+  const apiUser = req.session.get("user");
   const { db, client } = await connect();
   const session = await client.startSession();
-  
+
   try {
     await session.withTransaction(async () => {
       const projectId = ObjectID().toString();
@@ -276,8 +280,8 @@ const newClientProject = async(apiUser, req, res) => {
 }
 
 
-const newProject = async(apiUser, req, res) => {
-  
+const newProject = async(req, res) => {
+  const apiUser = req.session.get("user");
   const { db, client } = await connect();
   const session = client.startSession();
 
@@ -347,7 +351,7 @@ const newProject = async(apiUser, req, res) => {
 }
 
 
-const changeAdmin = async(apiUser, req, res) => {
+const changeAdmin = async(req, res) => {
   console.log("change-admin")
   try {
     const { id, username } = req.body;
@@ -373,7 +377,7 @@ const changeAdmin = async(apiUser, req, res) => {
 }
 
 
-const saveDeployment = async(apiUser, req, res) => {
+const saveDeployment = async(req, res) => {
   console.log("save-deployment")
   try {
     const {
@@ -409,7 +413,7 @@ const saveDeployment = async(apiUser, req, res) => {
 }
 
 
-const addBatch = async(apiUser, req, res) => {
+const addBatch = async(req, res) => {
   console.log('addBatch')
   try {
     const user = req.session.get("user");
@@ -439,6 +443,58 @@ const addBatch = async(apiUser, req, res) => {
 }
 
 
+const saveModules = async(req, res) => {
+  console.log('save-modules');
+  try {
+    const { batchId, modules } = req.body;
+    const { db } = await connect();
+    const rs = await db.collection(DB.Batches).findOneAndUpdate(
+      { _id: batchId },
+      { $set: {
+        modules: modules,
+        updatedAt: new Date()
+      }}
+    )
+
+    if (rs) {
+      return res.json({ message: 'Modules saved' });
+    } else {
+      return res.status(404).json({ message: 'Not found' })
+    }
+  } catch (error) {
+    return res.status(error.status || 500).end(error.message)
+  }
+}
+
+
+const saveCSVData = async(req, res) => {
+  console.log('save-csv-data');
+  try {
+    const { personae } = req.body;
+    const docs = [];
+    personae.forEach(person => {
+      const doc = person;
+      doc._id = ObjectID().toString();
+      doc.createdAt = new Date();
+      docs.push(doc);
+    });
+
+    // console.log(docs);
+
+    const { db } = await connect();
+    const rs = await db.collection(DB.Personae).insertMany(docs);
+
+    if (rs) {
+      return res.json({ message: 'Personae saved' });
+    } else {
+      return res.status(404).json({ message: 'Not found' })
+    }
+  } catch (error) {
+    return res.status(error.status || 500).end(error.message)
+  }
+}
+
+
 const ACCEPTED_QUERIES = {};
 
 ACCEPTED_QUERIES['disable-user']        = disableUser;
@@ -453,6 +509,8 @@ ACCEPTED_QUERIES['update-logo']         = uploadLogo;
 ACCEPTED_QUERIES['change-admin']        = changeAdmin;
 ACCEPTED_QUERIES['add-batch']           = addBatch;
 ACCEPTED_QUERIES['save-deployment']     = saveDeployment;
+ACCEPTED_QUERIES['save-modules']        = saveModules;
+ACCEPTED_QUERIES['save-csv-data']       = saveCSVData;
 
 
 export default withSession(async (req, res) => {
@@ -474,11 +532,11 @@ export default withSession(async (req, res) => {
   }
 
   const task = ACCEPTED_QUERIES[q];
-  return task (apiUser, req, res);
+  return task (req, res);
 });
 
 
-const TestUpdateSession = async(apiUser, req, res) => {
+const TestUpdateSession = async(req, res) => {
   console.log("TestUpdateSession")
   try {
     const user = req.session.get("user");

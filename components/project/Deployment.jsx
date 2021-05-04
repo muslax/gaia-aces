@@ -1,5 +1,7 @@
 import useBatch from "hooks/useBatch";
 import useGuidedModules from "hooks/useGuidedModules";
+import useProjectHeader from "hooks/useProjectHeader";
+import useWorkbook from "hooks/useWorkbook";
 import fetchJson from "lib/fetchJson";
 import { getLastVisitedBatchId }from  "lib/storage";
 import Link from "next/link";
@@ -10,30 +12,35 @@ import ErrorPage from "./Error";
 const Deployment = ({ user, project }) => {
   const batchId = getLastVisitedBatchId(project);
   const { batch, isError, isLoading } = useBatch(batchId);
-  const { modules: guidedModules, isError: modulesError, isLoading: modulesLoading } = useGuidedModules();
+  // const { modules: guidedModules, isError: modulesError, isLoading: modulesLoading } = useGuidedModules();
+  const { workbook, isError:workbookError, isLoading: workbookLoading } = useWorkbook();
   const [deploymentReqs, setDeploymentReqs] = useState([]);
+  const [depStatus, setDepStatus] = useState(null);
 
   const today = new Date();
   const [code, setCode] = useState('');
   const [openDate, setOpenDate] = useState('');
   const [openTime, setOpenTime] = useState('07:00');
   const [closeDate, setCloseDate] = useState('');
-  const [closeTime, setCloseTime] = useState('17:00')
+  const [closeTime, setCloseTime] = useState('17:00');
 
 
   // Check wether batch
   useEffect(() => {
-    if (batch && guidedModules) {
+    if (batch && workbook) {
       setCode(batch.accessCode);
 
       const array = [];
-      if (batch.personae === 0) array.push('Belum ada daftar persona.');
-      guidedModules.forEach(mod => {
-        if (batch.modules.includes(mod._id)) {
-          array.push(`Module ${mod.moduleName} memerlukan penjadwalan`);
-          return;
+      if (batch.personae === 0) {
+        array.push('Belum ada daftar persona.');
+      }
+
+      workbook.modules.filter(mod => mod.method == 'guided').forEach(mod => {
+        if (batch.modules.includes(mod.moduleId)) {
+          array.push(`Module ${mod.title} memerlukan penjadwalan`);
         }
       })
+
       setDeploymentReqs(array);
 
       if (batch.dateOpen !== null) {
@@ -48,15 +55,15 @@ const Deployment = ({ user, project }) => {
         setCloseTime(date.toString().substr(16, 5));
       }
     }
-  }, [batch, guidedModules])
+  }, [batch, workbook])
 
   function isDeployable() {
     return deploymentReqs.length == 0;
   }
 
-  if (isLoading || modulesLoading) return <>...</>;
+  if (isLoading || workbookLoading) return <>...</>;
 
-  if (isError || modulesError) return <>EEE</>; // <ErrorPage title="Something" code={batchId} message="Not Found" />
+  if (isError || workbookError) return <>EEE</>; // <ErrorPage title="Something" code={batchId} message="Not Found" />
 
 
   async function saveDeployment(e) {
@@ -237,7 +244,7 @@ const Deployment = ({ user, project }) => {
 
 
     <pre> {JSON.stringify(batch, null, 2)} </pre>
-    {/* <pre> {JSON.stringify(deploymentReqs, null, 2)} </pre> */}
+    <pre> {JSON.stringify(workbook, null, 2)} </pre>
     <style jsx>{`
     input::placeholder {
       color: #ccc;

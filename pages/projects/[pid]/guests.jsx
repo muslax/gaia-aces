@@ -30,7 +30,7 @@ const ProjectPage = () => {
       <div className="aces-geist border-t">
         <br/>
         <pre>
-          {JSON.stringify(project, null, 2)}<br/>
+          {JSON.stringify(user, null, 2)}<br/>
           {/* {JSON.stringify(batch, null, 2)}<br/> */}
         </pre>      </div>
     </div>

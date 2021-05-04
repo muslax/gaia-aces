@@ -1,4 +1,4 @@
-import { API_ROUTES } from "config/routes";
+import { API_ROUTES, ROUTES } from "config/routes";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import Image from 'next/image'
@@ -26,7 +26,7 @@ const ProjectHeader = () => {
 
     await mutateUser(fetchJson(API_ROUTES.Logout, { method: 'POST' }))
 
-    router.push(ROUTES.Home)
+    // router.push(ROUTES.Home)
   }
 
   const navigation = [

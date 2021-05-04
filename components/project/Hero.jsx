@@ -29,7 +29,7 @@ export const Hero = ({ user, project, title, isIndex = false }) => {
 
 
   return (
-    <div className="aces-wrap bg-gray-50s border-gray-200 pt-7 pb-8">
+    <div className="aces-wrap pt-7 pb-8">
       <div className="aces-geist text-center md:text-left">
         <h3 className="text-gray-600 text-2xl md:text-3xl font-light">{title}</h3>
         <div className="text-green-600 text-lg font-bold">
