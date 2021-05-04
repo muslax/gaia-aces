@@ -2,6 +2,7 @@
  * Project listing: id, title, client, admin
  */
 
+import Prefetching from "components/Prefetching";
 import useProjects from "hooks/useProjects";
 import Link from "next/link";
 import Heading from "./Heading";
@@ -60,6 +61,12 @@ export default function Dashboard({ user }) {
       </tbody>
     </table>
     {/* <pre>{JSON.stringify(projects, null, 2)}</pre> */}
+    <div className="fixed top-0 left-0 opacity-0">
+      <Prefetching url={'/api/get?q=get-clients'} />
+      <Prefetching url={'/api/get?q=get-users'} />
+      <Prefetching url={'/api/get?q=get-license'} />
+      {projects.map(project => <Prefetching key={project._id} url={`/api/get?q=get-project-header&pid=${project._id}`} />)}
+    </div>
   </>;
 }
 

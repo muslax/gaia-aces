@@ -1,3 +1,4 @@
+import Prefetching from "components/Prefetching";
 import fetchJson from "lib/fetchJson";
 import { getBatchKey, getLastVisitedBatch } from "lib/storage";
 import { useEffect, useState } from "react"
@@ -22,10 +23,12 @@ export const Hero = ({ user, project, title, isIndex = false }) => {
   const [selected, setSelected] = useState(getLastVisitedBatch(project));
   const [batchUrl, setBatchUrl] = useState(null);
   const [workbookUrl, setWorkbookUrl] = useState(null);
+  const [personaUrl, setPersonaUrl] = useState(null);
 
   useEffect(() => {
     setWorkbookUrl('/api/get?q=get-workbook');
     setBatchUrl(`/api/get?q=get-batch&bid=${selected._id}`);
+    setPersonaUrl(`/api/get?q=get-batch-personae&bid=${selected._id}`);
   }, [selected])
 
   if (!selected) return null;
@@ -41,10 +44,10 @@ export const Hero = ({ user, project, title, isIndex = false }) => {
 
   return (
     <div className="aces-wrap pt-7 pb-8">
-      <div className="absolute r-0 text-sm text-red-500">
-        &gt;
+      <div className="fixed top-0 left-0 text-sm text-red-500 opacity-0">
         <Prefetching url={batchUrl} />
         <Prefetching url={workbookUrl} />
+        <Prefetching url={personaUrl} />
       </div>
       <div className="aces-geist text-center md:text-left">
         <h3 className="text-gray-600 text-2xl md:text-3xl font-light">{title}</h3>
@@ -77,17 +80,17 @@ export const Hero = ({ user, project, title, isIndex = false }) => {
           </div>
         </div>
       </div>
-      <pre>{JSON.stringify(selected, null, 2)}</pre>
+      {/* <pre>{JSON.stringify(selected, null, 2)}</pre> */}
     </div>
   )
 }
 
-const Prefetching = ({ url }) => {
-  const { data, error } = useSWR(url ? url : null, fetchJson);
+// const Prefetching = ({ url }) => {
+//   const { data, error } = useSWR(url ? url : null, fetchJson);
 
-  if (!url) return null;
+//   if (!url) return null;
 
-  if (!data && !error) return <>-</>;
+//   if (!data && !error) return <>-</>;
 
-  return <>&gt;</>;
-}
+//   return <>&gt;</>;
+// }
