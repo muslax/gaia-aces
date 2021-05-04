@@ -1,5 +1,7 @@
+import fetchJson from "lib/fetchJson";
 import { getBatchKey, getLastVisitedBatch } from "lib/storage";
 import { useState } from "react"
+import useSWR from "swr";
 import SelectBatch from "./SelectBatch"
 
 // function getSelectedBatch(project) {
@@ -18,6 +20,8 @@ export const Hero = ({ user, project, title, isIndex = false }) => {
   const batchKey = getBatchKey(project);
   // const [selected, setSelected] = useState(getSelectedBatch(project));
   const [selected, setSelected] = useState(getLastVisitedBatch(project));
+  const [batchUrl, setBatchUrl] = useState(null);
+  const [workbookUrl, setWorkbookUrl] = useState(null);
 
   if (!selected) return null;
 
@@ -25,11 +29,18 @@ export const Hero = ({ user, project, title, isIndex = false }) => {
     const id = e._id;
     setSelected(e);
     window.localStorage.setItem(batchKey, id);
+    setWorkbookUrl('/api/get?q=get-workbook');
+    setBatchUrl(`/api/get?q=get-batch&bid=${id}`);
   }
 
 
   return (
     <div className="aces-wrap pt-7 pb-8">
+      <div className="absolute r-0 text-sm text-red-500">
+        &gt;
+        <Prefetching url={batchUrl} />
+        <Prefetching url={workbookUrl} />
+      </div>
       <div className="aces-geist text-center md:text-left">
         <h3 className="text-gray-600 text-2xl md:text-3xl font-light">{title}</h3>
         <div className="text-green-600 text-lg font-bold">
@@ -63,4 +74,14 @@ export const Hero = ({ user, project, title, isIndex = false }) => {
       </div>
     </div>
   )
+}
+
+const Prefetching = ({ url }) => {
+  const { data, error } = useSWR(url ? url : null, fetchJson);
+
+  if (!url) return null;
+
+  if (!data && !error) return <>-</>;
+
+  return <>&nbsp;</>;
 }

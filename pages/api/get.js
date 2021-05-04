@@ -17,6 +17,7 @@ const GetLicense = async(req, res) => {
 
 
 const GetWorkbook = async(req, res) => {
+  console.log("get-workbook");
   try {
     const apiUser = req.session.get("user");
     const { db } = await connect();
