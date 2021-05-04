@@ -14,7 +14,7 @@ import SelectBatch from "./SelectBatch"
 //   return selectedBatch;
 // }
 
-export const Hero = ({ user, project, title, isIndex = false }) => {
+export const Hero = ({ user, project, title, isIndex = false, callback }) => {
   const batchKey = getBatchKey(project);
   // const [selected, setSelected] = useState(getSelectedBatch(project));
   const [selected, setSelected] = useState(getLastVisitedBatch(project));
@@ -23,8 +23,11 @@ export const Hero = ({ user, project, title, isIndex = false }) => {
 
   function setActiveBatch(e) {
     const id = e._id;
-    setSelected(e);
     window.localStorage.setItem(batchKey, id);
+    setSelected(e);
+    if (callback) {
+      callback(id);
+    }
   }
 
 
