@@ -50,7 +50,7 @@ const ProjectPage = () => {
 
     <div className="aces-wrap pb-28">
       <div className="aces-geist border-t border-gray-300">
-        <pre>BATCHID {activeBatchId} </pre>
+        <pre>BATCHID {activeBatchId} <Placeholder apiUrl={batchSWRUrl} /> - <Placeholder apiUrl={workbookSwrUrl} /></pre>
         <Info user={user} project={project} />
       </div>
     </div>

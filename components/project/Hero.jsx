@@ -1,7 +1,5 @@
-import fetchJson from "lib/fetchJson";
 import { getBatchKey, getLastVisitedBatch } from "lib/storage";
 import { useState } from "react"
-import useSWR from "swr";
 import SelectBatch from "./SelectBatch"
 
 // function getSelectedBatch(project) {
@@ -21,9 +19,6 @@ export const Hero = ({ user, project, title, isIndex = false, callback }) => {
   // const [selected, setSelected] = useState(getSelectedBatch(project));
   const [selected, setSelected] = useState(getLastVisitedBatch(project));
 
-  const [batchSWRUrl, setBatchSWRUrl] = useState(null);
-  const [workbookSwrUrl, setWorkbookSwrUrl] = useState(null);
-
   if (!selected) return null;
 
   function setActiveBatch(e) {
@@ -33,17 +28,11 @@ export const Hero = ({ user, project, title, isIndex = false, callback }) => {
     if (callback) {
       callback(id);
     }
-    setBatchSWRUrl(`/api/get?q=get-batch&bid=${id}`);
-    setWorkbookSwrUrl(`/api/get?q=get-workbook`);
   }
 
 
   return (
     <div className="aces-wrap pt-7 pb-8">
-        <div className="absolute right-0">
-          <SWRPlaceholder apiUrl={batchSWRUrl} />
-          <SWRPlaceholder apiUrl={workbookSwrUrl} />
-        </div>
       <div className="aces-geist text-center md:text-left">
         <h3 className="text-gray-600 text-2xl md:text-3xl font-light">{title}</h3>
         <div className="text-green-600 text-lg font-bold">
@@ -77,12 +66,4 @@ export const Hero = ({ user, project, title, isIndex = false, callback }) => {
       </div>
     </div>
   )
-}
-
-const SWRPlaceholder = ({ apiUrl }) => {
-  const { data, error } = useSWR(apiUrl ? apiUrl : null, fetchJson);
-
-  if (!apiUrl) return <>|</>;
-  if (!data && !error) return <>...</>;
-  return <>DONE</>;
 }
