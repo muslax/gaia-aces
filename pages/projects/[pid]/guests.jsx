@@ -4,7 +4,7 @@ import { ROUTES } from "config/routes";
 import useUser from "hooks/useUser";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import useProjectHeader from "hooks/useProjectHeader";
+import useProject from "hooks/useProject";
 import ErrorPage from "components/project/Error";
 
 const ProjectPage = () => {
@@ -12,7 +12,7 @@ const ProjectPage = () => {
   const { user } = useUser();
   const router = useRouter();
   const { pid } = router.query;
-  const { project, isLoading, isError } = useProjectHeader(pid);
+  const { project, isLoading, isError } = useProject(pid);
   // const currentBatch = window.localStorage.getItem("batch");
 
   if (isLoading) return <></>;

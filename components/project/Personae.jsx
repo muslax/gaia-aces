@@ -1,12 +1,11 @@
+import usePersonae from "hooks/usePersonae";
 import { getLastVisitedBatchId } from "lib/storage";
 import Link from "next/link";
 import { useState } from "react";
 
-const { default: useBatchPersonae } = require("hooks/useBatchPersonae")
-
 const Personae = ({ user, project }) => {
   const batchId = getLastVisitedBatchId(project);
-  const { personae, isLoading, isError } = useBatchPersonae(batchId);
+  const { personae, isLoading, isError } = usePersonae(batchId);
   const [filter, setFilter] = useState('');
 
   if (isError || isLoading) return <>...</>;

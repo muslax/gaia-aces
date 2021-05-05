@@ -1,19 +1,16 @@
-import useBatch from "hooks/useBatch";
-import useGuidedModules from "hooks/useGuidedModules";
-import useProjectHeader from "hooks/useProjectHeader";
+import { API } from "config";
 import useWorkbook from "hooks/useWorkbook";
 import fetchJson from "lib/fetchJson";
 import { getLastVisitedBatchId }from  "lib/storage";
+import { getBatch } from "lib/utils";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { mutate } from "swr";
-import ErrorPage from "./Error";
 
 const Deployment = ({ user, project }) => {
   const batchId = getLastVisitedBatchId(project);
-  const { batch, isError, isLoading } = useBatch(batchId);
-  // const { modules: guidedModules, isError: modulesError, isLoading: modulesLoading } = useGuidedModules();
-  const { workbook, isError:workbookError, isLoading: workbookLoading } = useWorkbook();
+  const batch = getBatch(batchId, project);
+  const { workbook, isError, isLoading } = useWorkbook();
   const [deploymentReqs, setDeploymentReqs] = useState([]);
   const [depStatus, setDepStatus] = useState(null);
 
@@ -61,13 +58,13 @@ const Deployment = ({ user, project }) => {
     return deploymentReqs.length == 0;
   }
 
-  if (isLoading || workbookLoading) return <>...</>;
+  if (isLoading) return <>...</>;
 
-  if (isError || workbookError) return <>EEE</>; // <ErrorPage title="Something" code={batchId} message="Not Found" />
+  if (isError) return <>EEE</>; // <ErrorPage title="Something" code={batchId} message="Not Found" />
 
 
   async function saveDeployment(e) {
-    const url = '/api/post?q=save-deployment';
+    const url = `/api/post?q=${API.SAVE_DEPLOYMENT}`;
     const response = await fetchJson(url, {
       method: 'POST',
       headers: { 'Content-type': 'application/json' },

@@ -1,3 +1,4 @@
+import { API } from 'config';
 import useUsernames from 'hooks/useUsernames';
 import fetchJson from 'lib/fetchJson';
 import { useEffect, useState } from 'react';
@@ -52,7 +53,7 @@ const Info = ({ user, project }) => {
 
   async function changeAdmin(e) {
     setModal('Changing project admin...');
-    const url = '/api/post?q=change-admin';
+    const url = `/api/post?q=${API.CHANGE_ADMIN}`;
     console.log(selected)
     const body = { id: project._id, username: selected.username };
     console.log(body);
@@ -64,7 +65,7 @@ const Info = ({ user, project }) => {
 
     if (response) {
       console.log(response);
-      mutate(`/api/get?q=get-project-header&pid=${project._id}`);
+      mutate(`/api/get?q=${API.GET_PROJECT}&pid=${project._id}`);
     }
 
     setForm(null);
@@ -73,7 +74,7 @@ const Info = ({ user, project }) => {
 
   async function addBatch(e) {
     setModal('Saving new batch...');
-    const url = '/api/post?q=add-batch';
+    const url = `/api/post?q=${API.ADD_BATCH}`;
     console.log(selected)
     const body = { projectId: project._id, batchName: newBatchName };
     console.log(body);
@@ -85,7 +86,7 @@ const Info = ({ user, project }) => {
 
     if (response) {
       console.log(response);
-      mutate(`/api/get?q=get-project-header&pid=${project._id}`);
+      mutate(`/api/get?q=${API.GET_PROJECT}&pid=${project._id}`);
     }
 
     setForm(null);
@@ -178,6 +179,7 @@ const Info = ({ user, project }) => {
           </div>
         )}
         {/* <Row label="Batch" content={window.localStorage.getItem('batch')} /> */}
+        {/* <p>{selected.username}</p> */}
         <Row label="ID Proyek" content={project._id} />
         <Row label="Judul" content={project.title} />
         <Row label="Judul lengkap" content={project.fullTitle} />
@@ -187,13 +189,15 @@ const Info = ({ user, project }) => {
         <Row label="Tipe proyek" content={`${project.batchMode}-batch`} />
         <div className="flex items-center text-sm border-b py-2">
           <div className="w-1/4 ff flex-shrink-0 text-gray-500">
-            <span className="px-2 py-1 block">Admin</span>
+            <span className="pr-2 py-1 block">Admin</span>
           </div>
           <div className="flex-grow text-gray-800 font-medium">
             <div className="px-2 py-1">{project.admin.fullname}</div>
           </div>
         </div>
-        {/* <pre>{JSON.stringify(project, null, 2)}</pre> */}
+        <h3 className="text-lg font-bold mt-12 mb-3">Project Batches</h3>
+        <ProjectBatches project={project} />
+        <pre>{JSON.stringify(project, null, 2)}</pre>
       </>
     )}
     {modal && (
@@ -216,6 +220,30 @@ const Info = ({ user, project }) => {
 }
 
 export default Info;
+
+
+function ProjectBatches({ project }) {
+  return <table className="w-full text-sm">
+    <tbody>
+      <tr className="border-b border-gray-300 text-gray-500">
+        <td className="p-3 pl-0">Batch</td>
+        <td className="hidden sm:table-cell p-3 text-center">Modules</td>
+        <td className="p-3">Mulai</td>
+        <td className="p-3">Selesai</td>
+        <td className="hidden sm:table-cell p-3">Token</td>
+      </tr>
+      {project.batches.map((batch, index) => (
+        <tr key={batch._id} className="border-b font-semibold">
+          <td className="p-3 pl-0 whitespace-nowrap">{batch.batchName}</td>
+          <td className="hidden sm:table-cell p-3 text-center">{batch.modules.length}</td>
+          <td className="p-3 whitespace-nowrap">{batch.dateOpen ? new Date(batch.dateOpen).toLocaleString('id') : '-'}</td>
+          <td className="p-3 whitespace-nowrap">{batch.dateClosed ? new Date(batch.dateClosed).toLocaleString('id') : '-'}</td>
+          <td className="hidden sm:table-cell p-3">{batch.accessCode}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+}
 
 
 function FormRow ({ label, value, onChange }) {
@@ -246,7 +274,7 @@ function Row ({ label, content, truncate = true }) {
   return (
     <div className="flex items-center text-sm border-b py-2">
       <div className="w-1/4 ff flex-shrink-0 text-gray-500">
-        <span className="px-2 py-1 block truncate">{label}</span>
+        <span className="pr-2 py-1 block truncate">{label}</span>
       </div>
       <div className="flex-grow overflow-hidden text-gray-800 font-medium">
         <div className={`px-2 py-1 ${truncate ? 'truncate' : ''}`}>{content}</div>

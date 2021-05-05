@@ -1,8 +1,9 @@
+import { API } from "config"
 import fetchJson from "lib/fetchJson"
 import useSWR from "swr"
 
 export default function useProject(pid) {
-  const { data, error, mutate } = useSWR(`/api/get?q=get-project&pid=${pid}`, fetchJson)
+  const { data, error, mutate } = useSWR(`/api/get?q=${API.GET_PROJECT}&pid=${pid}`, fetchJson)
 
   return {
     project: data,

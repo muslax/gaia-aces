@@ -1,20 +1,18 @@
 import { Switch } from "@headlessui/react";
-import { API_ROUTES } from "config/routes";
-import useBatch from "hooks/useBatch";
-import useModulesMeta from "hooks/useModulesMeta";
+import { API } from "config";
 import useWorkbook from "hooks/useWorkbook";
 import fetchJson from "lib/fetchJson";
-import { getLastVisitedBatch, getLastVisitedBatchId } from "lib/storage";
+import { getLastVisitedBatchId } from "lib/storage";
+import { getBatch } from "lib/utils";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { mutate } from "swr";
-import ErrorPage from "./Error";
 
 const SetupModules = ({ user, project }) => {
   const router = useRouter();
-  const batchRef = getLastVisitedBatchId(project);
-  const { batch, isError, isLoading } = useBatch(batchRef);
-  const { workbook, isLoading: workbookLoading, isError: workbookError } = useWorkbook();
+  const batchId = getLastVisitedBatchId(project);
+  const batch = getBatch(batchId, project);
+  const { workbook, isLoading, isError } = useWorkbook();
   const [isEditing, setIsEditing] = useState(false);
   const [viewstack, setViewstack] = useState([]);
   const [expanded, setExpanded] = useState(false);
@@ -28,7 +26,7 @@ const SetupModules = ({ user, project }) => {
     }
   }, [batch]);
 
-  if (isLoading || workbookLoading ) return <>...</>;
+  if (isLoading ) return <>...</>;
 
   // return <ErrorPage title="Annapurna" code={batchRef} message="Not Found" />
 
@@ -52,8 +50,7 @@ const SetupModules = ({ user, project }) => {
       sims: sims,
     };
     console.log('BODY', body);
-    // return;
-    const res = fetchJson(API_ROUTES.SaveModules, {
+    const res = fetchJson(`/api/post?q=${API.SAVE_MODULES}`, {
       method: 'POST',
       headers: { 'Content-type': 'application/json' },
       body: JSON.stringify(body),
@@ -61,7 +58,8 @@ const SetupModules = ({ user, project }) => {
 
     if (res) {
       setSubmitting(false);
-      mutate(`/api/get?q=get-batch&bid=${batch._id}`);
+      // mutate(`/api/get?q=get-batch&bid=${batch._id}`);
+      mutate(`/api/get?q=${API.GET_PROJECT}&pid=${project._id}`)
       router.push(`/projects/${project._id}/modules`);
     }
   }

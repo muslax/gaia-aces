@@ -1,7 +1,8 @@
 import { Listbox, Transition } from "@headlessui/react";
 import { CheckIcon, SelectorIcon } from "@heroicons/react/solid";
+import { API } from "config";
 import { ROUTES } from "config/routes";
-import useSimpleClients from "hooks/useSimpleClients";
+import useClients from "hooks/useClients";
 import fetchJson from "lib/fetchJson";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -13,7 +14,7 @@ import Heading from "./Heading";
 export default function FormProject({ user }) {
   const router = useRouter();
 
-  const { clients, isLoading } = useSimpleClients()
+  const { clients, isLoading } = useClients();
   const [clientOptions, setClientOptions] = useState([{
     _id: '',
     orgName: '- New Client',
@@ -64,7 +65,7 @@ export default function FormProject({ user }) {
     e.preventDefault();
     setSubmitting(true);
 
-    const url = clientId ? '/api/post?q=new-client-project' : '/api/post?q=new-project';
+    const url = clientId ? `/api/post?q=${API.NEW_CLIENT_PROJECT}` :   `/api/post?q=${API.NEW_PROJECT}`;
     const response = await fetchJson(url, {
       method: 'POST',
       headers: { 'Content-type': 'application/json' },
@@ -90,7 +91,7 @@ export default function FormProject({ user }) {
 
     if (response) {
       setSubmitting(false);
-      mutate('/api/get?q=get-projects');
+      mutate(`/api/get?q=${API.GET_PROJECTS}`);
       router.push(ROUTES.Dashboard);
     }
   }

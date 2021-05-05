@@ -1,8 +1,9 @@
+import { API } from "config"
 import fetchJson from "lib/fetchJson"
 import useSWR from "swr"
 
 export default function useUsers() {
-  const { data, error, mutate } = useSWR('/api/get?q=get-users', fetchJson)
+  const { data, error, mutate } = useSWR(`/api/get?q=${API.GET_USERS}`, fetchJson)
 
   return {
     users: data,

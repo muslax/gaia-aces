@@ -1,37 +1,17 @@
-import useBatch from "hooks/useBatch";
-import useModulesMeta from "hooks/useModulesMeta";
 import useWorkbook from "hooks/useWorkbook";
-import fetchJson from "lib/fetchJson";
 import { getLastVisitedBatchId } from "lib/storage";
+import { getBatch } from "lib/utils";
 import Link from "next/link";
-import { mode } from "tailwind.config";
 import ErrorPage from "./Error";
-
-const { useState, useEffect } = require("react")
 
 const Modules = ({ user, project }) => {
   const batchId = getLastVisitedBatchId(project);
-  const { batch, isError, isLoading } = useBatch(batchId);
-  const { workbook, isError: workbookError, isLoading: workbookLoading } = useWorkbook();
-  const [batchModules, setBatchModules] = useState([])
+  const batch = getBatch(batchId, project);
+  const { workbook, isError, isLoading } = useWorkbook();
 
-  // useEffect(() => {
-  //   if (workbook && batch) {
-  //     const array = [];
-  //     workbook.modules.forEach(mod => {
-  //       if (batch.modules.includes(mod._id)) {
-  //         array.push(mod);
-  //       }
-  //     })
+  if (isLoading) return <>...</>;
 
-  //     array.sort(function(a, b) { return a._id - b._id });
-  //     setBatchModules(array);
-  //   }
-  // }, [workbook])
-
-  if (isLoading || workbookLoading) return <>...</>;
-
-  if (isError || workbookError) return <ErrorPage title="something" code={batchId} message="Not Found" />
+  if (isError) return <ErrorPage title="something" code={batchId} message="Not Found" />
 
   if (batch.modules.length == 0) return <BatchHasNoModule user={user} project={project} />
 

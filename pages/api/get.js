@@ -1,3 +1,4 @@
+import { API } from "config";
 import { DB } from "config/db";
 import { connect } from "lib/database";
 import withSession from "lib/session";
@@ -180,8 +181,8 @@ const GetUsernames = async(req, res) => {
 }
 
 
-const getProjectHeader = async(req, res) => {
-  console.log("getProjectHeader");
+const getProject = async(req, res) => {
+  console.log("getProject");
   try {
     const apiUser = req.session.get("user");
     const { pid } = req.query;
@@ -233,7 +234,11 @@ const getProjectHeader = async(req, res) => {
         'client.name': '$client.orgName',
         'client.city': '$client.city',
         'batches._id': 1,
-        'batches.batchName': 1
+        'batches.batchName': 1,
+        'batches.dateOpen': 1,
+        'batches.dateClosed': 1,
+        'batches.accessCode': 1,
+        'batches.modules': 1,
       }}
     ]);
 
@@ -246,20 +251,20 @@ const getProjectHeader = async(req, res) => {
 }
 
 
-const getProject = async(req, res) => {
-  console.log("getProject");
-  try {
-    const apiUser = req.session.get("user");
-    const { pid } = req.query;
-    const { db } = await connect();
-    const rs = await db.collection(DB.Projects).findOne({ _id: pid })
+// const getProject = async(req, res) => {
+//   console.log("getProject");
+//   try {
+//     const apiUser = req.session.get("user");
+//     const { pid } = req.query;
+//     const { db } = await connect();
+//     const rs = await db.collection(DB.Projects).findOne({ _id: pid })
 
-    if (!rs) return res.status(404).json({ message: 'Not found' })
-    return res.json(rs)
-  } catch (error) {
-    return res.status(error.status || 500).end(error.message)
-  }
-}
+//     if (!rs) return res.status(404).json({ message: 'Not found' })
+//     return res.json(rs)
+//   } catch (error) {
+//     return res.status(error.status || 500).end(error.message)
+//   }
+// }
 
 
 /**
@@ -310,30 +315,30 @@ const getBatch = async(req, res) => {
 }
 
 
-const getModulesMeta = async(req, res) => {
-  try {
-    const { db } = await connect();
-    const rs = await db.collection(DB.ModulesMeta).find().sort({ order: 1 }).toArray();
-    return res.json(rs)
-  } catch (error) {
-    return res.status(error.status || 500).end(error.message)
-  }
-}
+// const getModulesMeta = async(req, res) => {
+//   try {
+//     const { db } = await connect();
+//     const rs = await db.collection(DB.ModulesMeta).find().sort({ order: 1 }).toArray();
+//     return res.json(rs)
+//   } catch (error) {
+//     return res.status(error.status || 500).end(error.message)
+//   }
+// }
 
 
-const getGuidedModules = async(req, res) => {
-  try {
-    const { db } = await connect();
-    const rs = await db.collection(DB.ModulesMeta).find({ method: 'guided' }).sort({ order: 1 }).toArray();
-    return res.json(rs)
-  } catch (error) {
-    return res.status(error.status || 500).end(error.message)
-  }
-}
+// const getGuidedModules = async(req, res) => {
+//   try {
+//     const { db } = await connect();
+//     const rs = await db.collection(DB.ModulesMeta).find({ method: 'guided' }).sort({ order: 1 }).toArray();
+//     return res.json(rs)
+//   } catch (error) {
+//     return res.status(error.status || 500).end(error.message)
+//   }
+// }
 
 // Daftar persona dalam batch
-const getBatchPersonae = async(req, res) => {
-  console.log('getBatchPersonae', req.query);
+const getPersonae = async(req, res) => {
+  console.log('getPersonae', req.query);
   try {
     const { bid } = req.query;
     console.log('batchId', bid);
@@ -373,7 +378,7 @@ const getBatchPersonae = async(req, res) => {
 }
 
 
-const getBatchCredentials = async(req, res) => {
+const getTestAccess = async(req, res) => {
   console.log('getBatchCredentials');
   try {
     const { bid } = req.query;
@@ -407,20 +412,19 @@ const XXXXX = async(req, res) => {
 
 const ACCEPTED_QUERIES = {};
 
-ACCEPTED_QUERIES['get-license']           = GetLicense;
-ACCEPTED_QUERIES['get-projects']          = GetProjects;
-ACCEPTED_QUERIES['get-clients']           = GetClients;
-ACCEPTED_QUERIES['get-simple-clients']    = GetSimpleClients;
-ACCEPTED_QUERIES['get-users']             = GetUsers;
-ACCEPTED_QUERIES['get-usernames']         = GetUsernames;
-ACCEPTED_QUERIES['get-project-header']    = getProjectHeader;
-ACCEPTED_QUERIES['get-project']           = getProject;
-ACCEPTED_QUERIES['get-batch']             = getBatch;
-ACCEPTED_QUERIES['get-modules-meta']      = getModulesMeta;
-ACCEPTED_QUERIES['get-batch-personae']    = getBatchPersonae;
-ACCEPTED_QUERIES['get-guided-modules']    = getGuidedModules;
-ACCEPTED_QUERIES['get-workbook']          = GetWorkbook;
-ACCEPTED_QUERIES['get-batch-credentials'] = getBatchCredentials;
+ACCEPTED_QUERIES[API.GET_LICENSE]           = GetLicense;
+ACCEPTED_QUERIES[API.GET_PROJECTS]          = GetProjects;
+ACCEPTED_QUERIES[API.GET_CLIENTS]           = GetClients;
+ACCEPTED_QUERIES[API.GET_SIMPLE_CLIENTS]    = GetSimpleClients;
+ACCEPTED_QUERIES[API.GET_USERS]             = GetUsers;
+ACCEPTED_QUERIES[API.GET_USERNAMES]         = GetUsernames;
+ACCEPTED_QUERIES[API.GET_PROJECT]           = getProject;
+ACCEPTED_QUERIES[API.GET_BATCH]             = getBatch;
+ACCEPTED_QUERIES[API.GET_PERSONAE]          = getPersonae;
+ACCEPTED_QUERIES[API.GET_WORKBOOK]          = GetWorkbook;
+ACCEPTED_QUERIES[API.GET_TEST_ACCESS]       = getTestAccess;
+
+// ACCEPTED_QUERIES['get-guided-modules']    = getGuidedModules;
 
 
 

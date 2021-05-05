@@ -1,15 +1,13 @@
-import useBatch from "hooks/useBatch";
-import { createRandomPassword } from "lib/utils";
-
-const { default: useBatchCredentials } = require("hooks/useBatchCredentials");
-const { getLastVisitedBatchId } = require("lib/storage");
+import useTestAccess from "hooks/useTestAccess";
+import { getLastVisitedBatchId } from 'lib/storage';
+import { getBatch } from "lib/utils";
 
 const Credentials = ({ user, project }) => {
   const batchId = getLastVisitedBatchId(project);
-  const { batch, isError: batchError, isLoading: batchLoading } = useBatch(batchId);
-  const { credentials, isError, isLoading, mutate } = useBatchCredentials(batchId);
+  const batch = getBatch(batchId, project);
+  const { credentials, isError, isLoading, mutate } = useTestAccess(batchId);
 
-  if (isLoading || batchLoading) return <>...</>;
+  if (isLoading) return <>...</>;
 
   return <>
     <table className="w-full text-sm">

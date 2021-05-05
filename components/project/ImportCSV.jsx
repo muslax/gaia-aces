@@ -1,9 +1,8 @@
-import { API_ROUTES } from "config/routes";
-import useBatch from "hooks/useBatch";
+import { API } from "config";
 import useWorkbook from "hooks/useWorkbook";
 import fetchJson from "lib/fetchJson";
 import { getLastVisitedBatchId } from "lib/storage";
-import { generatePOSTData } from "lib/utils";
+import { generatePOSTData, getBatch } from "lib/utils";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { CSVReader } from "react-papaparse";
@@ -13,8 +12,8 @@ const buttonRef = React.createRef()
 const ImportCSV = ({ user, project }) => {
   const router = useRouter();
   const batchId = getLastVisitedBatchId(project);
-  const { batch, isError, isLoading } = useBatch(batchId);
-  const { workbook, isError: workbookError, isLoading: workbookLoading } = useWorkbook();
+  const batch = getBatch(batchId, project);
+  const { workbook, isError, isLoading } = useWorkbook();
 
   const [testIds, setTestIds] = useState([]);
   const [simIds, setSimIds] = useState([]);
@@ -46,7 +45,7 @@ const ImportCSV = ({ user, project }) => {
 
     const body = { personae: personaData };
     const res = await fetchJson(
-      API_ROUTES.SaveCSV,
+      API.SAVE_CSV_DATA,
       generatePOSTData(body)
     );
   }
@@ -161,7 +160,7 @@ const ImportCSV = ({ user, project }) => {
     return () => {}
   }, [csvData]);
 
-  if (isLoading || workbookLoading) return <>...</>;
+  if (isLoading) return <>...</>;
 
 
   return <>

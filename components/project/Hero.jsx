@@ -1,34 +1,18 @@
 import Prefetching from "components/Prefetching";
-import fetchJson from "lib/fetchJson";
+import { API } from "config";
 import { getBatchKey, getLastVisitedBatch } from "lib/storage";
 import { useEffect, useState } from "react"
-import useSWR from "swr";
 import SelectBatch from "./SelectBatch"
-
-// function getSelectedBatch(project) {
-//   const lsBatch = window.localStorage.getItem("batch");
-//   let selectedBatch = null;
-
-//   project.batches.forEach(b => {
-//     if (b._id == lsBatch) {
-//       selectedBatch = b;
-//     }
-//   })
-//   return selectedBatch;
-// }
 
 export const Hero = ({ user, project, title, isIndex = false }) => {
   const batchKey = getBatchKey(project);
-  // const [selected, setSelected] = useState(getSelectedBatch(project));
   const [selected, setSelected] = useState(getLastVisitedBatch(project));
-  const [batchUrl, setBatchUrl] = useState(null);
   const [workbookUrl, setWorkbookUrl] = useState(null);
   const [personaUrl, setPersonaUrl] = useState(null);
 
   useEffect(() => {
-    setWorkbookUrl('/api/get?q=get-workbook');
-    setBatchUrl(`/api/get?q=get-batch&bid=${selected._id}`);
-    setPersonaUrl(`/api/get?q=get-batch-personae&bid=${selected._id}`);
+    setWorkbookUrl(`/api/get?q=${API.GET_WORKBOOK}`);
+    setPersonaUrl(`/api/get?q=${API.GET_PERSONAE}&bid=${selected._id}`);
   }, [selected])
 
   if (!selected) return null;
@@ -37,15 +21,12 @@ export const Hero = ({ user, project, title, isIndex = false }) => {
     const id = e._id;
     setSelected(e);
     window.localStorage.setItem(batchKey, id);
-    // setWorkbookUrl('/api/get?q=get-workbook');
-    // setBatchUrl(`/api/get?q=get-batch&bid=${id}`);
   }
 
 
   return (
     <div className="aces-wrap pt-7 pb-8">
       <div className="fixed top-0 left-0 text-sm text-red-500 opacity-0">
-        <Prefetching url={batchUrl} />
         <Prefetching url={workbookUrl} />
         <Prefetching url={personaUrl} />
       </div>
@@ -84,13 +65,3 @@ export const Hero = ({ user, project, title, isIndex = false }) => {
     </div>
   )
 }
-
-// const Prefetching = ({ url }) => {
-//   const { data, error } = useSWR(url ? url : null, fetchJson);
-
-//   if (!url) return null;
-
-//   if (!data && !error) return <>-</>;
-
-//   return <>&gt;</>;
-// }

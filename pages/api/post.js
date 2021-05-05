@@ -1,4 +1,5 @@
 import { ObjectID } from "bson";
+import { API } from "config";
 import { DB } from "config/db";
 import { connect } from "lib/database";
 import withSession from "lib/session";
@@ -458,7 +459,7 @@ const saveModules = async(req, res) => {
           updatedAt: new Date()
         }}
       )
-      
+
       console.log('BATCH RS', batchRs);
 
       const personaRs = await db.collection(DB.Personae).updateMany(
@@ -515,20 +516,20 @@ const saveCSVData = async(req, res) => {
 
 const ACCEPTED_QUERIES = {};
 
-ACCEPTED_QUERIES['disable-user']        = disableUser;
-ACCEPTED_QUERIES['activate-user']       = activateUser;
-ACCEPTED_QUERIES['delete-user']         = deleteUser;
-ACCEPTED_QUERIES['reset-user']          = resetUser;
-ACCEPTED_QUERIES['change-password']     = changePassword;
-ACCEPTED_QUERIES['new-user']            = newUser;
-ACCEPTED_QUERIES['new-project']         = newProject;
-ACCEPTED_QUERIES['new-client-project']  = newClientProject;
-ACCEPTED_QUERIES['update-logo']         = uploadLogo;
-ACCEPTED_QUERIES['change-admin']        = changeAdmin;
-ACCEPTED_QUERIES['add-batch']           = addBatch;
-ACCEPTED_QUERIES['save-deployment']     = saveDeployment;
-ACCEPTED_QUERIES['save-modules']        = saveModules;
-ACCEPTED_QUERIES['save-csv-data']       = saveCSVData;
+ACCEPTED_QUERIES[API.DISABLE_USER]       = disableUser;
+ACCEPTED_QUERIES[API.ACTIVATE_USER]      = activateUser;
+ACCEPTED_QUERIES[API.DELETE_USER]        = deleteUser;
+ACCEPTED_QUERIES[API.RESET_USER]         = resetUser;
+ACCEPTED_QUERIES[API.CHANGE_PASSWORD]    = changePassword;
+ACCEPTED_QUERIES[API.NEW_USER]           = newUser;
+ACCEPTED_QUERIES[API.NEW_PROJECT]        = newProject;
+ACCEPTED_QUERIES[API.NEW_CLIENT_PROJECT] = newClientProject;
+ACCEPTED_QUERIES[API.UPDATE_LOGO]        = uploadLogo;
+ACCEPTED_QUERIES[API.CHANGE_ADMIN]       = changeAdmin;
+ACCEPTED_QUERIES[API.ADD_BATCH]          = addBatch;
+ACCEPTED_QUERIES[API.SAVE_DEPLOYMENT]    = saveDeployment;
+ACCEPTED_QUERIES[API.SAVE_MODULES]       = saveModules;
+ACCEPTED_QUERIES[API.SAVE_CSV_DATA]       = saveCSVData;
 
 
 export default withSession(async (req, res) => {

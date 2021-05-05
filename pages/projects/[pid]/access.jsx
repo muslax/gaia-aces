@@ -4,9 +4,8 @@ import { ROUTES } from "config/routes";
 import useUser from "hooks/useUser";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import useProjectHeader from "hooks/useProjectHeader";
+import useProject from "hooks/useProject";
 import ErrorPage from "components/project/Error";
-import Deployment from "components/project/Deployment";
 import Credentials from "components/project/Credentials";
 
 const ProjectPage = () => {
@@ -14,7 +13,7 @@ const ProjectPage = () => {
   const { user } = useUser();
   const router = useRouter();
   const { pid } = router.query;
-  const { project, isLoading, isError } = useProjectHeader(pid);
+  const { project, isLoading, isError } = useProject(pid);
 
   if (isLoading) return <></>;
 
