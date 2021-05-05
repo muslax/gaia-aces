@@ -6,8 +6,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import getProject from "hooks/useProject";
 import ErrorPage from "components/project/Error";
-import Deployment from "components/project/Deployment";
-import ImportCSV from "components/project/ImportCSV";
+import { ImportCSV } from "components/project/persona";
 
 const ProjectPage = () => {
   const htmlTitle = "ACES - Import CSV";

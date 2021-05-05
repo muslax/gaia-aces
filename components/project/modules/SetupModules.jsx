@@ -7,13 +7,11 @@ import { getBatch } from "lib/utils";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
-const SetupModules = ({ user, project, mutate }) => {
+export const SetupModules = ({ user, project, mutate }) => {
   const router = useRouter();
   const batchId = getLastVisitedBatchId(project);
   const batch = getBatch(batchId, project);
   const { workbook, isLoading, isError } = useWorkbook();
-  const [isEditing, setIsEditing] = useState(false);
-  const [viewstack, setViewstack] = useState([]);
   const [expanded, setExpanded] = useState(false);
   const [selected, setSelected] = useState([]);
   const [submitting, setSubmitting] = useState(false);
@@ -21,14 +19,11 @@ const SetupModules = ({ user, project, mutate }) => {
 
   useEffect(() => {
     if (batch) {
-      setIsEditing(batch.modules.length > 0);
       setSelected(batch.modules);
     }
   }, [batch]);
 
   if (isLoading ) return <>...</>;
-
-  // return <ErrorPage title="Annapurna" code={batchRef} message="Not Found" />
 
   async function saveModules(e) {
     setSubmitting(true);
@@ -36,10 +31,14 @@ const SetupModules = ({ user, project, mutate }) => {
     const sims = [];
     workbook.modules.forEach(mod => {
       if (selected.includes(mod.moduleId)) {
+        let obj = {};
+        obj[mod.moduleId] = [mod.length, 0];
         if (mod.method == 'selftest') {
-          tests.push(mod.moduleId);
+          // tests.push(mod.moduleId);
+          tests.push(obj);
         } else if (mod.method == 'guided') {
-          sims.push(mod.moduleId);
+          // sims.push(mod.moduleId);
+          sims.push(obj);
         }
       }
     })
@@ -64,7 +63,6 @@ const SetupModules = ({ user, project, mutate }) => {
   }
 
   return <>
-    {/* <pre>SELECTED {JSON.stringify(batch, null, 2)}</pre> */}
     <div className="bg-green-50s text-center p-8 -mt-pxs">
       <h3 className="text-xl font-bold mb-6">
         Pilih modul-modul ACES sesuai kebutuhan proyek.
@@ -75,7 +73,6 @@ const SetupModules = ({ user, project, mutate }) => {
       </p>
     </div>
 
-    {/* <pre>SELECTED {selected.join(" ")}</pre> */}
     <table className="w-full text-sm border-b">
       <thead>
         <tr className="border-b">
@@ -164,7 +161,7 @@ const SetupModules = ({ user, project, mutate }) => {
       </button>
     </div>
     <pre>
-      WORKBOOK {JSON.stringify(workbook, null, 2)}<br/>
+      {/* WORKBOOK {JSON.stringify(workbook, null, 2)}<br/> */}
     </pre>
     {submitting && <div className="fixed z-50 w-full h-full top-0 left-0 flex items-center justify-center bg-gray-400 bg-opacity-20">
       <div className="w-72 rounded border border-gray-400 bg-white shadow">
@@ -186,5 +183,3 @@ const SetupModules = ({ user, project, mutate }) => {
     </div>}
   </>
 }
-
-export default SetupModules;

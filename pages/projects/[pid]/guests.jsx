@@ -6,6 +6,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import useProject from "hooks/useProject";
 import ErrorPage from "components/project/Error";
+import { Guests } from "components/project/guests";
 
 const ProjectPage = () => {
   const htmlTitle = "ACES - Project Guests";
@@ -13,7 +14,6 @@ const ProjectPage = () => {
   const router = useRouter();
   const { pid } = router.query;
   const { project, isLoading, isError } = useProject(pid);
-  // const currentBatch = window.localStorage.getItem("batch");
 
   if (isLoading) return <></>;
 
@@ -27,12 +27,9 @@ const ProjectPage = () => {
     <Hero user={user} project={project} title="Guests" />
 
     <div className="aces-wrap pb-28">
-      <div className="aces-geist border-t">
-        <br/>
-        <pre>
-          {JSON.stringify(user, null, 2)}<br/>
-          {/* {JSON.stringify(batch, null, 2)}<br/> */}
-        </pre>      </div>
+      <div className="aces-geist">
+        <Guests user={user} project={project} />
+      </div>
     </div>
   </>;
 }

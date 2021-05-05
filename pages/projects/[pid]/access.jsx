@@ -6,7 +6,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import useProject from "hooks/useProject";
 import ErrorPage from "components/project/Error";
-import Credentials from "components/project/Credentials";
+import { Credentials } from "components/project/deployment";
 
 const ProjectPage = () => {
   const htmlTitle = "ACES - Test Access";
@@ -27,7 +27,7 @@ const ProjectPage = () => {
     <Hero user={user} project={project} title="Test Access" />
 
     <div className="aces-wrap pb-28">
-      <div className="aces-geist border-t">
+      <div className="aces-geist">
         <Credentials user={user} project={project} />
       </div>
     </div>

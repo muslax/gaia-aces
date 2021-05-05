@@ -7,7 +7,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { mutate } from "swr";
 
-const Deployment = ({ user, project }) => {
+export const Deployment = ({ user, project }) => {
   const batchId = getLastVisitedBatchId(project);
   const batch = getBatch(batchId, project);
   const { workbook, isError, isLoading } = useWorkbook();
@@ -240,8 +240,8 @@ const Deployment = ({ user, project }) => {
     </p>
 
 
-    <pre> {JSON.stringify(batch, null, 2)} </pre>
-    <pre> {JSON.stringify(workbook, null, 2)} </pre>
+    {/* <pre> {JSON.stringify(batch, null, 2)} </pre> */}
+    {/* <pre> {JSON.stringify(workbook, null, 2)} </pre> */}
     <style jsx>{`
     input::placeholder {
       color: #ccc;
@@ -250,7 +250,6 @@ const Deployment = ({ user, project }) => {
   </>
 }
 
-export default Deployment;
 
 function FormRow ({ label, value, onChange }) {
   return (

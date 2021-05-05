@@ -5,7 +5,7 @@ import useUser from "hooks/useUser";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import useProject from "hooks/useProject";
-import Modules from "components/project/Modules";
+import { Modules } from 'components/project/modules'
 import ErrorPage from "components/project/Error";
 
 const ProjectPage = () => {
@@ -29,8 +29,7 @@ const ProjectPage = () => {
     <div className="aces-wrap pb-28">
       <div className="aces-geist">
         <Modules user={user} project={project} />
-
-        <pre><br/>
+        <pre>
           {/* {JSON.stringify(project, null, 2)}<br/> */}
           {/* {JSON.stringify(batch, null, 2)}<br/> */}
         </pre>

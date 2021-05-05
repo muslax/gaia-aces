@@ -6,7 +6,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import useProject from "hooks/useProject";
 import ErrorPage from "components/project/Error";
-import Deployment from "components/project/Deployment";
+import { Deployment } from "components/project/deployment";
 
 const ProjectPage = () => {
   const htmlTitle = "ACES - Project Deployment";

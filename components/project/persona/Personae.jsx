@@ -3,7 +3,7 @@ import { getLastVisitedBatchId } from "lib/storage";
 import Link from "next/link";
 import { useState } from "react";
 
-const Personae = ({ user, project }) => {
+export const Personae = ({ user, project }) => {
   const batchId = getLastVisitedBatchId(project);
   const { personae, isLoading, isError } = usePersonae(batchId);
   const [filter, setFilter] = useState('');
@@ -59,8 +59,6 @@ const Personae = ({ user, project }) => {
         </tbody>
       ))}
     </table>
-    <pre>{JSON.stringify(personae, null, 2)}</pre>
+    {/* <pre>{JSON.stringify(personae, null, 2)}</pre> */}
   </>;
 }
-
-export default Personae;

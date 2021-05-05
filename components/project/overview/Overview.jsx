@@ -12,7 +12,7 @@ import FormInfo from "./FormInfo";
 const { default: Batches } = require("./Batches")
 const { default: Info } = require("./Info")
 
-const Overview = ({ user, project }) => {
+export const Overview = ({ user, project }) => {
   const { users, isLoading, isError } = useUsernames();
 
   const [form, setForm] = useState(null);
@@ -102,11 +102,9 @@ const Overview = ({ user, project }) => {
     <h3 className="text-lg font-bold mt-12 mb-3">Project Batches</h3>
     <Batches project={project} />
     {modal !== null && <Submitting message={modal} />}
-    <pre>{JSON.stringify(project, null, 2)}</pre>
+    {/* <pre>{JSON.stringify(project, null, 2)}</pre> */}
   </>;
 }
-
-export default Overview;
 
 function ButtonAdmin({ label, onClick}) {
   return (

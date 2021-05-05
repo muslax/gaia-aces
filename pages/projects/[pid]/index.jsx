@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 import useProject from "hooks/useProject";
 import { setLocalStorage } from "lib/storage";
 import ErrorPage from "components/project/Error";
-import Overview from "components/project/overview/Overview";
+import { Overview } from "components/project/overview";
 
 
 const ProjectPage = () => {

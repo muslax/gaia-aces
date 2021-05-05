@@ -5,7 +5,7 @@ import useUser from "hooks/useUser";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import useProject from "hooks/useProject";
-import Personae from "components/project/Personae";
+import { Personae } from 'components/project/persona';
 import ErrorPage from "components/project/Error";
 
 const ProjectPage = () => {

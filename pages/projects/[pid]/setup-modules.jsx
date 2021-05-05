@@ -5,9 +5,8 @@ import useUser from "hooks/useUser";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import getProject from "hooks/useProject";
-import Modules from "components/project/Modules";
 import ErrorPage from "components/project/Error";
-import SetupModules from "components/project/SetupModules";
+import { SetupModules } from 'components/project/modules';
 
 const ProjectPage = () => {
   const htmlTitle = "ACES - Setup Modules";

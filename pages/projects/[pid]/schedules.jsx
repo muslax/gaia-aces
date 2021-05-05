@@ -6,6 +6,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import useProject from "hooks/useProject";
 import ErrorPage from "components/project/Error";
+import { Schedules } from "components/project/deployment";
 
 const ProjectPage = () => {
   const htmlTitle = "ACES - Deployment Schedules";
@@ -26,8 +27,8 @@ const ProjectPage = () => {
     <Hero user={user} project={project} title="Schedules" />
 
     <div className="aces-wrap pb-28">
-      <div className="aces-geist border-t">
-        {/* <Deployment user={user} project={project} /> */}
+      <div className="aces-geis">
+        <Schedules user={user} project={project} />
       </div>
     </div>
   </>;

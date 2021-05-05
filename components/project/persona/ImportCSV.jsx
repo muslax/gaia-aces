@@ -1,6 +1,6 @@
+import { API } from "config";
 import { SubmitDone } from "components/SubmitOverlay";
 import { Submitting } from "components/SubmitOverlay";
-import { API } from "config";
 import useWorkbook from "hooks/useWorkbook";
 import fetchJson from "lib/fetchJson";
 import { getLastVisitedBatchId } from "lib/storage";
@@ -8,10 +8,11 @@ import { generatePOSTData, getBatch } from "lib/utils";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { CSVReader } from "react-papaparse";
+import { TableCSV } from "./TableCSV";
 
 const buttonRef = React.createRef()
 
-const ImportCSV = ({ user, project }) => {
+export const ImportCSV = ({ user, project }) => {
   const router = useRouter();
   const batchId = getLastVisitedBatchId(project);
   const batch = getBatch(batchId, project);
@@ -25,23 +26,6 @@ const ImportCSV = ({ user, project }) => {
   const [done, setDone] = useState(false);
   const [hashing, sethashing] = useState(false);
   const [hashingFlag, setHashingFlag] = useState(false);
-
-  const generateHashOnServer = async () => {
-    // sethashing(true)
-    // const url = '/api/post?q=check-and-prepare-csv'
-    // const response = await fetchJson(url, {
-    //   method: 'POST',
-    //   headers: { 'Content-type': 'application/json' },
-    //   body: JSON.stringify(personaData)
-    // })
-
-    // if (response) {
-    //   setPersonaData(response)
-    //   sethashing(false)
-    // } else {
-    //   // setResponse('FAILED')
-    // }
-  }
 
   async function handleSubmit(e) {
     setSubmitting(true);
@@ -108,6 +92,9 @@ const ImportCSV = ({ user, project }) => {
     workbook.modules.forEach(mod => {
       if (batch.modules.includes(mod.moduleId)) {
         let obj = {};
+        // Tests and sims format
+        // <moduleId>: [ <module.lngth>, 0 ]
+        // "608b29105959bf263a6ecce0": [ 45, 0 ]
         obj[mod.moduleId] = [mod.length, 0];
         if (mod.method == 'selftest') {
           tests.push(obj);
@@ -252,67 +239,12 @@ const ImportCSV = ({ user, project }) => {
       <TableCSV data={personaData} />
     </div>
     <pre>
-      Batch {JSON.stringify(batch, null, 2)}<br/>
+      {/* Batch {JSON.stringify(batch, null, 2)}<br/> */}
       {/* CSVData {JSON.stringify(csvData, null, 2)}<br/> */}
-      Persona {JSON.stringify(personaData, null, 2)}<br/>
-      Workbook {JSON.stringify(workbook, null, 2)}<br/>
+      {/* Persona {JSON.stringify(personaData, null, 2)}<br/> */}
+      {/* Workbook {JSON.stringify(testIds, null, 2)}<br/> */}
     </pre>
     {submitting && <Submitting message="Saviing modules" />}
     {done && <SubmitDone message="Modules saved" callback={e => router.push(`/projects/${project._id}/persona`)} />}
   </>;
-}
-
-export default ImportCSV;
-
-function TableCSV({ data }) {
-  return (
-    <table className="w-full text-xs whitespace-nowrap">
-      <thead>
-        <tr className="bg-gray-200 text-xs uppercase text-gray-600">
-          <td className="h-7 px-2 py-1 text-right">##</td>
-          <td className="h-7 px-2 py-1 border-l border-gray-400 border-opacity-25">fullname</td>
-          <td className="h-7 px-2 py-1 border-l border-gray-400 border-opacity-25">username</td>
-          <td className="col-email h-7 px-2 py-1 border-l border-gray-400 border-opacity-25">email</td>
-          <td className="col-gender h-7 px-2 py-1 border-l border-gray-400 border-opacity-25">l/p</td>
-          <td className="col-birth h-7 px-2 py-1 border-l border-gray-400 border-opacity-25">birth</td>
-          <td className="col-phone h-7 px-2 py-1 border-l border-gray-400 border-opacity-25">phone</td>
-          <td className="col-nip h-7 px-2 py-1 border-l border-gray-400 border-opacity-25">nip</td>
-          <td className="col-position h-7 px-2 py-1 border-l border-gray-400 border-opacity-25">position</td>
-          <td className="h-7 px-2 py-1 border-l border-gray-400 border-opacity-25">c-Level</td>
-          <td className="h-7 px-2 py-1 border-l border-gray-400 border-opacity-25">t-Level</td>
-        </tr>
-        {data.length > 0 && <tr>
-          <td colSpan="11" className="h-0 p-0 bg-gray-400 border-t border-gray-400"></td>
-        </tr>}
-      </thead>
-      <tbody>
-      {data.map(({
-        fullname,
-        username,
-        email,
-        gender,
-        birth,
-        phone,
-        nip,
-        position,
-        currentLevel,
-        targetLevel,
-        xfpwd }, index) => (
-          <tr key={email} className={`bg-white border-b`}>
-            <td className="h-7 px-2 py-1 text-right">{index + 1}</td>
-            <td className="h-7 px-2 py-1 border-l border-gray-400 border-opacity-25">{fullname}</td>
-            <td className="h-7 px-2 py-1 border-l border-gray-400 border-opacity-25">{username}</td>
-            <td className="col-email h-7 px-2 py-1 border-l border-gray-400 border-opacity-25">{email}</td>
-            <td className="col-gender h-7 px-2 py-1 border-l border-gray-400 border-opacity-25">{gender}</td>
-            <td className="col-birth h-7 px-2 py-1 border-l border-gray-400 border-opacity-25">{birth}</td>
-            <td className="col-phone h-7 px-2 py-1 border-l border-gray-400 border-opacity-25">{phone}</td>
-            <td className="col-nip h-7 px-2 py-1 border-l border-gray-400 border-opacity-25">{nip}</td>
-            <td className="col-position h-7 px-2 py-1 border-l border-gray-400 border-opacity-25">{position}</td>
-            <td className="h-7 px-2 py-1 border-l border-gray-400 border-opacity-25">{currentLevel}</td>
-            <td className="h-7 px-2 py-1 border-l border-gray-400 border-opacity-25">{targetLevel}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  )
 }

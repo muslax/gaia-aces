@@ -2,18 +2,18 @@ import useWorkbook from "hooks/useWorkbook";
 import { getLastVisitedBatchId } from "lib/storage";
 import { getBatch } from "lib/utils";
 import Link from "next/link";
-import ErrorPage from "./Error";
+import ModulesEmpty from "./ModulesEmpty";
 
-const Modules = ({ user, project }) => {
+export const Modules = ({ user, project }) => {
   const batchId = getLastVisitedBatchId(project);
   const batch = getBatch(batchId, project);
   const { workbook, isError, isLoading } = useWorkbook();
 
   if (isLoading) return <>...</>;
 
-  if (isError) return <ErrorPage title="something" code={batchId} message="Not Found" />
+  if (isError) return <>ERR</>;
 
-  if (batch.modules.length == 0) return <BatchHasNoModule user={user} project={project} />
+  if (batch.modules.length == 0) return <ModulesEmpty user={user} project={project} />
 
   function isProjectAdmin() {
     return user.username == project.admin.username;
@@ -67,31 +67,8 @@ const Modules = ({ user, project }) => {
         ))}
       </tbody>
     </table>
-
-
-
-
     {/* <pre>{JSON.stringify(project, null, 2)}</pre> */}
     {/* <pre>BATCH {JSON.stringify(batch, null, 2)}</pre> */}
     {/* <pre>{JSON.stringify(workbook, null, 2)}</pre> */}
   </>;
-}
-
-export default Modules;
-
-
-function BatchHasNoModule({ user, project }) {
-  const o = user.licenseType == 'corporate' ? 'Batch' : 'Proyek';
-  return (
-    <div className="bg-green-50s text-center p-8 -mt-pxs">
-      <h3 className="text-xl font-bold mb-6">
-        {`${o} ini belum memiliki modul untuk dijalankan.`}
-      </h3>
-      <Link href={`/projects/${project._id}/setup-modules`}>
-        <a className="inline-flex rounded border hover:border-gray-300 active:border-gray-400 px-6 py-2 text-blue-500 hover:text-blue-600">
-          Setup modules &nbsp; &rarr;
-        </a>
-      </Link>
-    </div>
-  )
 }

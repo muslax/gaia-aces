@@ -2,7 +2,7 @@ import useTestAccess from "hooks/useTestAccess";
 import { getLastVisitedBatchId } from 'lib/storage';
 import { getBatch } from "lib/utils";
 
-const Credentials = ({ user, project }) => {
+export const Credentials = ({ user, project }) => {
   const batchId = getLastVisitedBatchId(project);
   const batch = getBatch(batchId, project);
   const { credentials, isError, isLoading, mutate } = useTestAccess(batchId);
@@ -32,6 +32,3 @@ const Credentials = ({ user, project }) => {
     </pre>
   </>;
 }
-
-export default Credentials;
-// donisu jtdhs
