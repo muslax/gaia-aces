@@ -25,4 +25,5 @@ export const API = {
   SAVE_DEPLOYMENT:        'save-deployment',
   SAVE_MODULES:           'save-modules',
   SAVE_CSV_DATA:          'save-csv-data',
+  UPDATE_PROJECT:         'update-project',
 };

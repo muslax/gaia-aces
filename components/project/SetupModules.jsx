@@ -6,9 +6,8 @@ import { getLastVisitedBatchId } from "lib/storage";
 import { getBatch } from "lib/utils";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { mutate } from "swr";
 
-const SetupModules = ({ user, project }) => {
+const SetupModules = ({ user, project, mutate }) => {
   const router = useRouter();
   const batchId = getLastVisitedBatchId(project);
   const batch = getBatch(batchId, project);
@@ -18,6 +17,7 @@ const SetupModules = ({ user, project }) => {
   const [expanded, setExpanded] = useState(false);
   const [selected, setSelected] = useState([]);
   const [submitting, setSubmitting] = useState(false);
+  const [done, setDone] = useState(false);
 
   useEffect(() => {
     if (batch) {
@@ -57,10 +57,9 @@ const SetupModules = ({ user, project }) => {
     })
 
     if (res) {
+      mutate();
       setSubmitting(false);
-      // mutate(`/api/get?q=get-batch&bid=${batch._id}`);
-      mutate(`/api/get?q=${API.GET_PROJECT}&pid=${project._id}`)
-      router.push(`/projects/${project._id}/modules`);
+      setDone(true);
     }
   }
 
@@ -165,10 +164,26 @@ const SetupModules = ({ user, project }) => {
       </button>
     </div>
     <pre>
-      {/* {JSON.stringify(batchRef, null, 2)}<br/> */}
-      {/* {JSON.stringify(batch, null, 2)}<br/> */}
       WORKBOOK {JSON.stringify(workbook, null, 2)}<br/>
     </pre>
+    {submitting && <div className="fixed z-50 w-full h-full top-0 left-0 flex items-center justify-center bg-gray-400 bg-opacity-20">
+      <div className="w-72 rounded border border-gray-400 bg-white shadow">
+        <h3 className="text-xl mx-4 my-2">Saving modules</h3>
+        <div className="progress rounded-b bg-gray-300 h-2"></div>
+      </div>
+    </div>}
+    {done && <div className="fixed z-50 w-full h-full top-0 left-0 flex items-center justify-center bg-gray-400 bg-opacity-20">
+      <div className="w-72 rounded border border-gray-400 bg-white shadow">
+        <h3 className="text-xl mx-4 my-2">Modules saved</h3>
+        <div className="mx-4 my-4 text-center">
+          <button
+            className="relative w-fulls py-1 px-4 text-left bg-white rounded border border-gray-300 hover:border-gray-400 active:border-gray-500 shadow-sm text-sm"
+            onClick={e => router.push(`/projects/${project._id}/modules`)}>
+            Close
+          </button>
+        </div>
+      </div>
+    </div>}
   </>
 }
 

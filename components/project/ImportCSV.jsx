@@ -1,3 +1,5 @@
+import { SubmitDone } from "components/SubmitOverlay";
+import { Submitting } from "components/SubmitOverlay";
 import { API } from "config";
 import useWorkbook from "hooks/useWorkbook";
 import fetchJson from "lib/fetchJson";
@@ -20,6 +22,7 @@ const ImportCSV = ({ user, project }) => {
   const [csvData, setCsvData] = useState(null);
   const [personaData, setPersonaData] = useState([]);
   const [submitting, setSubmitting] = useState(false);
+  const [done, setDone] = useState(false);
   const [hashing, sethashing] = useState(false);
   const [hashingFlag, setHashingFlag] = useState(false);
 
@@ -45,9 +48,14 @@ const ImportCSV = ({ user, project }) => {
 
     const body = { personae: personaData };
     const res = await fetchJson(
-      API.SAVE_CSV_DATA,
+      `/api/post?q=${API.SAVE_CSV_DATA}`,
       generatePOSTData(body)
     );
+
+    if (res) {
+      setSubmitting(false);
+      setDone(true);
+    }
   }
 
 
@@ -195,13 +203,13 @@ const ImportCSV = ({ user, project }) => {
               >
                 Pilih file
               </button>}
-              {submitting || personaData.length == 0 && <button
+              {personaData.length == 0 && <button
                 disabled={submitting}
                 className="bg-white inline-flex text-sm px-3 py-1 ml-3 text-gray-400 rounded border border-gray-300"
               >
                 Remove
               </button>}
-              {!submitting && personaData.length > 0 && <button
+              {personaData.length > 0 && <button
                 type="button"
                 disabled={submitting}
                 onClick={handleRemoveFile}
@@ -211,13 +219,13 @@ const ImportCSV = ({ user, project }) => {
               </button>}
             </div>
             <div className="flex items-center rounded-r-md bg-gray-100 px-3 py-3 -mt-1 mb-5 border-l border-gray-300">
-              {submitting || personaData.length == 0 && <button
+              {personaData.length == 0 && <button
                 disabled
                 className="bg-white inline-flex text-sm px-3 py-1 text-gray-400 rounded border border-gray-300"
               >
                 Save<span className="hidden sm:inline"> CSV Data</span>
               </button>}
-              {!submitting && personaData.length > 0 && <button
+              {personaData.length > 0 && <button
                 type="button"
                 disabled={submitting || personaData.length == 0}
                 onClick={handleSubmit}
@@ -227,7 +235,6 @@ const ImportCSV = ({ user, project }) => {
               </button>}
               <button
                 type="button"
-                disabled={submitting}
                 onClick={e => {
                   router.push(`/projects/${project._id}/persona`)
                 }}
@@ -250,9 +257,8 @@ const ImportCSV = ({ user, project }) => {
       Persona {JSON.stringify(personaData, null, 2)}<br/>
       Workbook {JSON.stringify(workbook, null, 2)}<br/>
     </pre>
-    <style jsx>{`
-
-    `}</style>
+    {submitting && <Submitting message="Saviing modules" />}
+    {done && <SubmitDone message="Modules saved" callback={e => router.push(`/projects/${project._id}/persona`)} />}
   </>;
 }
 

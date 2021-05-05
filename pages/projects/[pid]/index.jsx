@@ -5,9 +5,9 @@ import useUser from "hooks/useUser";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import useProject from "hooks/useProject";
-import Info from "components/project/Info";
 import { setLocalStorage } from "lib/storage";
 import ErrorPage from "components/project/Error";
+import Overview from "components/project/overview/Overview";
 
 
 const ProjectPage = () => {
@@ -17,7 +17,7 @@ const ProjectPage = () => {
   const { pid } = router.query;
   const { project, isLoading, isError } = useProject(pid);
 
-  if (isLoading) return <></>;
+  if (isLoading) return <div className="text-xl text-center">Loading...</div>;
 
   if (isError) return <ErrorPage title={htmlTitle} code={pid} message="Not Found" />
 
@@ -31,8 +31,8 @@ const ProjectPage = () => {
     <Hero user={user} project={project} title="Project Info" isIndex />
 
     <div className="aces-wrap pb-28">
-      <div className="aces-geist border-t border-gray-300">
-        <Info user={user} project={project} />
+      <div className="aces-geist">
+        <Overview user={user} project={project} />
       </div>
     </div>
   </>;

@@ -72,7 +72,7 @@ const Modules = ({ user, project }) => {
 
 
     {/* <pre>{JSON.stringify(project, null, 2)}</pre> */}
-    <pre>BATCH MODULES {JSON.stringify(batch, null, 2)}</pre>
+    {/* <pre>BATCH {JSON.stringify(batch, null, 2)}</pre> */}
     {/* <pre>{JSON.stringify(workbook, null, 2)}</pre> */}
   </>;
 }
@@ -95,40 +95,3 @@ function BatchHasNoModule({ user, project }) {
     </div>
   )
 }
-
-/*
-
-<tbody key={mod.moduleId}>
-          <tr className={
-            (batch.modules.includes(mod.moduleId) ? 'bg-gray-50' : '')
-            + ` border-bs border-gray-200`
-          }>
-            <td className="w-10 px-3 py-2">
-              <input
-                type="checkbox"
-                className="w-5 h-5 rounded border-gray-400 focus:ring focus:ring-offset-0 focus:ring-green-200 focus:ring-opacity-25 focus:outline-none text-green-500"
-              />
-            </td>
-            <td className="p-2 text-base font-bold">
-              <span
-                className="cursor-pointer hover:text-green-600"
-              >
-                {mod.title}
-              </span>
-            </td>
-            <td className="p-2 text-right"></td>
-            <td className="p-2 w-16 text-right whitespace-nowrap"></td>
-          </tr>
-            <tr className={
-              (batch.modules.includes(mod.moduleId) ? 'border-b bg-gray-50' : '')
-            }>
-              <td className="w-10 p-2"></td>
-              <td colSpan="2" className="p-2 pt-0 pb-3">
-                <p className="font-semibold mb-1">{mod.domain} - {mod.maxTime} menit</p>
-                <p className="text-gray-500">{mod.description}</p>
-              </td>
-              <td></td>
-            </tr>
-        </tbody>
-
-*/

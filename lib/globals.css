@@ -22,3 +22,6 @@ pre {
 .aces-geist {
   @apply max-w-4xl mx-auto;
 }
+.progress {
+  background-image: url(/mango-in-progress-01.gif);
+}

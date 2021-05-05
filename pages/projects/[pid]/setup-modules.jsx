@@ -14,7 +14,7 @@ const ProjectPage = () => {
   const { user } = useUser();
   const router = useRouter();
   const { pid } = router.query;
-  const { project, isLoading, isError } = getProject(pid);
+  const { project, isLoading, isError, mutate } = getProject(pid);
 
   if (isLoading) return <></>;
 
@@ -31,7 +31,7 @@ const ProjectPage = () => {
 
     <div className="aces-wrap pb-28">
       <div className="aces-geist border-t">
-        <SetupModules user={user} project={project} />
+        <SetupModules user={user} project={project} mutate={mutate} />
       </div>
     </div>
   </>;

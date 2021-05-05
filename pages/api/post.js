@@ -413,6 +413,41 @@ const saveDeployment = async(req, res) => {
   }
 }
 
+const updateProject = async(req, res) => {
+  console.log("update-project")
+  try {
+    const {
+      projectId,
+      title,
+      fullTitle,
+      description,
+      startDate,
+      endDate,
+    } = req.body;
+    const { db } = await connect();
+    const rs = await db.collection(DB.Projects).findOneAndUpdate(
+      { _id: projectId },
+      { $set: {
+        title: title,
+        fullTitle: fullTitle,
+        description: description,
+        startDate: startDate,
+        endDate: endDate,
+        updatedAt: new Date(),
+      }}
+    )
+
+    console.log(rs);
+    if (rs) {
+      return res.json({ message: 'Project updated' });
+    } else {
+      return res.status(404).json({ message: 'Not found' })
+    }
+  } catch (error) {
+    return res.status(error.status || 500).end(error.message)
+  }
+}
+
 
 const addBatch = async(req, res) => {
   console.log('addBatch')
@@ -499,6 +534,7 @@ const saveCSVData = async(req, res) => {
     });
 
     // console.log(docs);
+    // return res.json(docs);
 
     const { db } = await connect();
     const rs = await db.collection(DB.Personae).insertMany(docs);
@@ -529,7 +565,8 @@ ACCEPTED_QUERIES[API.CHANGE_ADMIN]       = changeAdmin;
 ACCEPTED_QUERIES[API.ADD_BATCH]          = addBatch;
 ACCEPTED_QUERIES[API.SAVE_DEPLOYMENT]    = saveDeployment;
 ACCEPTED_QUERIES[API.SAVE_MODULES]       = saveModules;
-ACCEPTED_QUERIES[API.SAVE_CSV_DATA]       = saveCSVData;
+ACCEPTED_QUERIES[API.SAVE_CSV_DATA]      = saveCSVData;
+ACCEPTED_QUERIES[API.UPDATE_PROJECT]     = updateProject;
 
 
 export default withSession(async (req, res) => {
