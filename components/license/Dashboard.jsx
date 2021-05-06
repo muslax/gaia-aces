@@ -1,8 +1,5 @@
-/**
- * Project listing: id, title, client, admin
- */
-
 import Prefetching from "components/Prefetching";
+import { API } from "config";
 import useProjects from "hooks/useProjects";
 import Link from "next/link";
 import Heading from "./Heading";
@@ -62,10 +59,10 @@ export default function Dashboard({ user }) {
     </table>
     {/* <pre>{JSON.stringify(projects, null, 2)}</pre> */}
     <div className="fixed top-0 left-0 opacity-0">
-      <Prefetching url={'/api/get?q=get-clients'} />
-      <Prefetching url={'/api/get?q=get-users'} />
-      <Prefetching url={'/api/get?q=get-license'} />
-      {projects.map(project => <Prefetching key={project._id} url={`/api/get?q=get-project-header&pid=${project._id}`} />)}
+      <Prefetching url={`/api/get?q=${API.GET_CLIENTS}`} />
+      <Prefetching url={`/api/get?q=${API.GET_USERS}`} />
+      <Prefetching url={`/api/get?q=${API.GET_LICENSE}`} />
+      {projects.map(project => <Prefetching key={project._id} url={`/api/get?q=${API.GET_PROJECT}&pid=${project._id}`} />)}
     </div>
   </>;
 }

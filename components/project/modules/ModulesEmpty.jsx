@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function ModulesEmpty({ user, project }) {
   const o = user.licenseType == 'corporate' ? 'Batch' : 'Proyek';
   return (

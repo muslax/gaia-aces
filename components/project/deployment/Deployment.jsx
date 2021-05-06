@@ -144,7 +144,7 @@ export const Deployment = ({ user, project }) => {
               min={today.toISOString().substr(0, 10)}
               onChange={e => setOpenDate(e.target.value)}
               className={`
-              w-36 px-3 h-9 text-sm font-medium rounded border-gray-300 shadow-sm
+              w-40 px-3 h-9 text-sm font-medium rounded border-gray-300 shadow-sm
               focus:border-indigo-400 focus:ring focus:ring-indigo-100 focus:ring-opacity-50
               `}
             />
@@ -177,7 +177,7 @@ export const Deployment = ({ user, project }) => {
               placeholder="dd-mm-yyyy"
               onChange={e => setCloseDate(e.target.value)}
               className={`
-              w-36 px-3 h-9 text-sm font-medium rounded border-gray-300 shadow-sm
+              w-40 px-3 h-9 text-sm font-medium rounded border-gray-300 shadow-sm
               focus:border-indigo-400 focus:ring focus:ring-indigo-100 focus:ring-opacity-50
               `}
             />
