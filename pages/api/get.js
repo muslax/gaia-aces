@@ -188,7 +188,7 @@ const getProject = async(req, res) => {
     const { pid } = req.query;
     const { db } = await connect();
     const cursor = await db.collection(DB.Projects).aggregate([
-      { $match: { _id: pid }},
+      { $match: { _id: pid, licenseId: apiUser.licenseId }},
       { $limit: 1 },
       { $lookup: {
         from: DB.Clients,
@@ -400,6 +400,22 @@ const getTestAccess = async(req, res) => {
 }
 
 
+const checkAccessCode = async(req, res) => {
+  try {
+    const { db } = await connect()
+    const { token } = req.query
+    const rs = await db.collection(DB.Batches).findOne({ accessCode: token })
+    if (rs) {
+      return res.json({ message: 'not-available' })
+    } else {
+      return res.json({ message: 'available' })
+    }
+  } catch (error) {
+    return res.status(error.status || 500).end(error.message)
+  }
+}
+
+
 const XXXXX = async(req, res) => {
   try {
     const { db } = await connect();
@@ -423,6 +439,7 @@ ACCEPTED_QUERIES[API.GET_BATCH]             = getBatch;
 ACCEPTED_QUERIES[API.GET_PERSONAE]          = getPersonae;
 ACCEPTED_QUERIES[API.GET_WORKBOOK]          = GetWorkbook;
 ACCEPTED_QUERIES[API.GET_TEST_ACCESS]       = getTestAccess;
+ACCEPTED_QUERIES['check-access-code'] = checkAccessCode
 
 // ACCEPTED_QUERIES['get-guided-modules']    = getGuidedModules;
 

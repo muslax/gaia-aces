@@ -15,7 +15,10 @@ export const Deployment = ({ user, project }) => {
   const [depStatus, setDepStatus] = useState(null);
 
   const today = new Date();
-  const [code, setCode] = useState('');
+  const [code, setCode] = useState(batch.accessCode || '');
+  const [isCodeValid, setIsCodeValid] = useState(batch.accessCode || false)
+  const [codeMsg, setCodeMsg] = useState('')
+
   const [openDate, setOpenDate] = useState('');
   const [openTime, setOpenTime] = useState('07:00');
   const [closeDate, setCloseDate] = useState('');
@@ -56,6 +59,27 @@ export const Deployment = ({ user, project }) => {
 
   function isDeployable() {
     return deploymentReqs.length == 0;
+  }
+
+  async function checkToken(e) {
+    const val = e.target.value.toLowerCase()
+    setCode(val)
+    if (val.length < 5) {
+      setIsCodeValid(false)
+      setCodeMsg('Minimum 5 karakter')
+    }
+    if (val.length >= 5 && val.length <= 20) {
+      const url = `/api/get?q=check-access-code&token=${val}`
+      const response = await fetchJson(url)
+      if (response.message == 'available') {
+        setIsCodeValid(true)
+        setCodeMsg('Available')
+      } else {
+        setIsCodeValid(false)
+        setCodeMsg('Not available')
+      }
+    }
+
   }
 
   if (isLoading) return <>...</>;
@@ -118,15 +142,19 @@ export const Deployment = ({ user, project }) => {
           <div className="px-3 py-2">
             <input
               type="text"
+              disabled={batch.accessCode && batch.accessCode?.length > 4}
               placeholder="5-20 karakter"
+              minLength="5"
               maxLength="20"
               value={code}
-              onChange={e => setCode(e.target.value)}
+              onChange={checkToken}
               className={`
               w-44 px-3 h-9 text-sm font-medium rounded border-gray-300 shadow-sm
               focus:border-indigo-400 focus:ring focus:ring-indigo-100 focus:ring-opacity-50
               `}
             />
+            {codeMsg && !isCodeValid && <span className="text-sm text-red-500 ml-4">{codeMsg}</span>}
+            {codeMsg && isCodeValid && <span className="text-sm text-green-500 ml-4">{codeMsg}</span>}
           </div>
         </div>
       </div>
@@ -202,13 +230,17 @@ export const Deployment = ({ user, project }) => {
         </div>
         <div className="flex-grow text-gray-800s font-medium">
           <div className="flex px-3 py-2">
-            <button
+            {(isCodeValid || batch.accessCode) && <button
               className={`
-              w-24 px-3 h-9 text-sm font-medium rounded border border-gray-300 shadow-sm
+              w-24 px-3 h-9 text-sm font-medium rounded border border-gray-400 hover:border-gray-500 shadow-sm
               focus:border-indigo-400 focus:ring focus:ring-indigo-100 focus:ring-opacity-50
               `}
               onClick={saveDeployment}
-            >Save</button>
+            >Save</button>}
+            {!isCodeValid && <button disabled
+              className={`
+              w-24 px-3 h-9 text-sm text-gray-300 font-medium rounded border border-gray-300 shadow-sms`}
+            >Save</button>}
           </div>
         </div>
       </div>
@@ -240,7 +272,7 @@ export const Deployment = ({ user, project }) => {
     </p>
 
 
-    {/* <pre> {JSON.stringify(batch, null, 2)} </pre> */}
+    <pre> {JSON.stringify(batch, null, 2)} </pre>
     {/* <pre> {JSON.stringify(workbook, null, 2)} </pre> */}
     <style jsx>{`
     input::placeholder {

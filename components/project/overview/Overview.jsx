@@ -65,9 +65,9 @@ export const Overview = ({ user, project }) => {
   return <>
     {!form  && (
       <div className="border-t flex items-center h-16 text-sm text-center md:text-left border-b border-gray-300">
-        {user.licenseOwner && <ButtonAdmin label="Change Admin" onClick={e => setForm('change-admin')} />}
+        {user.licenseOwner && user.licenseType == "corporate" && <ButtonAdmin label="Change Admin" onClick={e => setForm('change-admin')} />}
         {user.username == project.admin.username && <>
-          <ButtonAdmin label="Add Batch" onClick={e => setForm('add-batch')} />
+          {user.licenseType == "corporate" && <ButtonAdmin label="Add Batch" onClick={e => setForm('add-batch')} />}
           <ButtonAdmin label="Edit Info" onClick={e => setForm('edit-info')} />
         </>}
       </div>
@@ -102,7 +102,8 @@ export const Overview = ({ user, project }) => {
     <h3 className="text-lg font-bold mt-12 mb-3">Project Batches</h3>
     <Batches project={project} />
     {modal !== null && <Submitting message={modal} />}
-    {/* <pre>{JSON.stringify(project, null, 2)}</pre> */}
+    <pre>{JSON.stringify(user, null, 2)}</pre>
+    <pre>{JSON.stringify(project, null, 2)}</pre>
   </>;
 }
 

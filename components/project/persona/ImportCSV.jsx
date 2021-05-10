@@ -134,7 +134,7 @@ export const ImportCSV = ({ user, project }) => {
             // simGroup: null,
             tests: testIds,
             sims: simIds,
-            onGoing: null,
+            workingOn: null,
             // currentSim: null,
             // testsPerformed: [],
             // simsPerformed: [],
@@ -244,7 +244,7 @@ export const ImportCSV = ({ user, project }) => {
       {/* Persona {JSON.stringify(personaData, null, 2)}<br/> */}
       {/* Workbook {JSON.stringify(testIds, null, 2)}<br/> */}
     </pre>
-    {submitting && <Submitting message="Saviing modules" />}
-    {done && <SubmitDone message="Modules saved" callback={e => router.push(`/projects/${project._id}/persona`)} />}
+    {submitting && <Submitting message="Saving CSV data" />}
+    {done && <SubmitDone message="Data saved" callback={e => router.push(`/projects/${project._id}/persona`)} />}
   </>;
 }

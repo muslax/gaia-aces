@@ -10,6 +10,14 @@ export const Credentials = ({ user, project }) => {
   if (isLoading) return <>...</>;
 
   return <>
+    <div className="flex items-center h-16 text-sm text-center md:text-left border-t border-b border-gray-300">
+      <a className="inline-flex rounded border hover:border-gray-300 active:border-gray-400 px-6 py-2 text-blue-500 hover:text-blue-600">
+        Generate password &nbsp; &rarr;
+      </a>
+      <span className="ml-4">{new Date(batch.dateOpen).toLocaleString('id')}</span>
+      <span className="ml-4">s/d</span>
+      <span className="ml-4">{new Date(batch.dateClosed).toLocaleString('id')}</span>
+    </div>
     <table className="w-full text-sm">
       <tbody>
         {credentials.map((person, idx) => (
