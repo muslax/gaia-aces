@@ -8,6 +8,7 @@ export const API = {
   GET_CLIENTS:            'get-clients',
   GET_USERNAMES:          'get-usernames',
   GET_PERSONAE:           'get-personae',
+  GET_GUESTS:             'get-guests',
   GET_WORKBOOK:           'get-workbook',
   GET_TEST_ACCESS:        'get-test-access',
   // POST
@@ -17,6 +18,7 @@ export const API = {
   RESET_USER:             'reset-user',
   CHANGE_PASSWORD:        'change-password',
   NEW_USER:               'new-user',
+  NEW_GUEST:              'new-guest',
   NEW_PROJECT:            'new-project',
   NEW_CLIENT_PROJECT:     'new-client-project',
   UPDATE_LOGO:            'update-logo',

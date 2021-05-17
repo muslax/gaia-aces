@@ -232,6 +232,54 @@ const newUser = async(req, res) => {
 }
 
 
+const newGuest = async(req, res) => {
+  console.log("new-guest")
+  const apiUser = req.session.get("user");
+  try {
+    const { projectId, batchId, type, fullname, username, email, phone } = req.body;
+    const { password, hashed_password, xfpwd } = createRandomPassword();
+    const id = ObjectID().toString();
+    const { db } = await connect();
+    const rs = await db.collection(DB.Guests).insertOne({
+      _id: id,
+      // licenseId: apiUser.licenseId,
+      projectId: projectId,
+      batchId: batchId,
+      type: type,
+      fullname: fullname,
+      username: username,
+      email: email,
+      phone: phone,
+      verified: false,
+      disabled: false,
+      // deleted: false,
+      // gender: null,
+      // phone: null,
+      // roles: [],
+      // xfpwd: xfpwd,
+      hashed_password: hashed_password,
+      createdBy: apiUser.username,
+      createdAt: new Date()
+    })
+
+    if (rs) {
+      console.log(rs);
+      return res.json({
+        _id: id,
+        type: type,
+        fullname: fullname,
+        email: email,
+        username: username,
+        password: password,
+        disabled: false,
+      });
+    }
+  } catch (error) {
+    return res.status(error.status || 500).end(error.message)
+  }
+}
+
+
 const newClientProject = async(req, res) => {
   const apiUser = req.session.get("user");
   const { db, client } = await connect();
@@ -558,6 +606,7 @@ ACCEPTED_QUERIES[API.DELETE_USER]        = deleteUser;
 ACCEPTED_QUERIES[API.RESET_USER]         = resetUser;
 ACCEPTED_QUERIES[API.CHANGE_PASSWORD]    = changePassword;
 ACCEPTED_QUERIES[API.NEW_USER]           = newUser;
+ACCEPTED_QUERIES[API.NEW_GUEST]          = newGuest;
 ACCEPTED_QUERIES[API.NEW_PROJECT]        = newProject;
 ACCEPTED_QUERIES[API.NEW_CLIENT_PROJECT] = newClientProject;
 ACCEPTED_QUERIES[API.UPDATE_LOGO]        = uploadLogo;

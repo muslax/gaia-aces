@@ -337,6 +337,7 @@ const getBatch = async(req, res) => {
 // }
 
 // Daftar persona dalam batch
+
 const getPersonae = async(req, res) => {
   console.log('getPersonae', req.query);
   try {
@@ -369,6 +370,31 @@ const getPersonae = async(req, res) => {
         // _sims: {$size: '$sims'},
         // _testsPerformed: {$size: '$testsPerformed'},
         // _simsPerformed: {$size: '$simsPerformed'},
+      }}
+    ).toArray();
+    return res.json(rs);
+  } catch (error) {
+    return res.status(error.status || 500).end(error.message)
+  }
+}
+
+
+const getGuests = async(req, res) => {
+  console.log('getGuests', req.query);
+  try {
+    const { bid } = req.query;
+    const { db } = await connect();
+    const rs = await db.collection(DB.Guests).find(
+      { batchId: bid },
+      { projection: {
+        // _id: 1,
+        projectId: 1,
+        batchId: 1,
+        type: 1,
+        disabled: 1,
+        username: 1,
+        email: 1,
+        fullname: 1,
       }}
     ).toArray();
     return res.json(rs);
@@ -437,6 +463,7 @@ ACCEPTED_QUERIES[API.GET_USERNAMES]         = GetUsernames;
 ACCEPTED_QUERIES[API.GET_PROJECT]           = getProject;
 ACCEPTED_QUERIES[API.GET_BATCH]             = getBatch;
 ACCEPTED_QUERIES[API.GET_PERSONAE]          = getPersonae;
+ACCEPTED_QUERIES[API.GET_GUESTS]            = getGuests;
 ACCEPTED_QUERIES[API.GET_WORKBOOK]          = GetWorkbook;
 ACCEPTED_QUERIES[API.GET_TEST_ACCESS]       = getTestAccess;
 ACCEPTED_QUERIES['check-access-code'] = checkAccessCode

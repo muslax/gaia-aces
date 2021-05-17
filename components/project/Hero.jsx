@@ -25,7 +25,7 @@ export const Hero = ({ user, project, title, isIndex = false }) => {
 
 
   return (
-    <div className="aces-wrap pt-7 pb-8">
+    <div id="hero" className="aces-wrap pt-7 pb-8">
       <div className="fixed top-0 left-0 text-sm text-red-500 opacity-0">
         <Prefetching url={workbookUrl} />
         <Prefetching url={personaUrl} />

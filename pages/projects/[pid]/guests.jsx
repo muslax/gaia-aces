@@ -7,6 +7,7 @@ import { useRouter } from "next/router";
 import useProject from "hooks/useProject";
 import ErrorPage from "components/project/Error";
 import { Guests } from "components/project/guests";
+import { useState } from "react";
 
 const ProjectPage = () => {
   const htmlTitle = "ACES - Project Guests";
@@ -14,6 +15,8 @@ const ProjectPage = () => {
   const router = useRouter();
   const { pid } = router.query;
   const { project, isLoading, isError } = useProject(pid);
+
+  const [hero, setHero] = useState(true)
 
   if (isLoading) return <></>;
 
@@ -24,11 +27,11 @@ const ProjectPage = () => {
       <title>{htmlTitle}</title>
     </Head>
 
-    <Hero user={user} project={project} title="Guests" />
+    {hero && <Hero user={user} project={project} title="Guests" />}
 
     <div className="aces-wrap pb-28">
       <div className="aces-geist">
-        <Guests user={user} project={project} />
+        <Guests user={user} project={project} setHero={setHero} />
       </div>
     </div>
   </>;
