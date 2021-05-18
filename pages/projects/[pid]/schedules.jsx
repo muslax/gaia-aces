@@ -27,7 +27,7 @@ const ProjectPage = () => {
     <Hero user={user} project={project} title="Schedules" />
 
     <div className="aces-wrap pb-28">
-      <div className="aces-geis">
+      <div className="aces-geist">
         <Schedules user={user} project={project} />
       </div>
     </div>

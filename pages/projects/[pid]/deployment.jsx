@@ -27,7 +27,7 @@ const ProjectPage = () => {
     <Hero user={user} project={project} title="Deployment" />
 
     <div className="aces-wrap pb-28">
-      <div className="aces-geist border-t">
+      <div className="aces-geist">
         <Deployment user={user} project={project} />
       </div>
     </div>

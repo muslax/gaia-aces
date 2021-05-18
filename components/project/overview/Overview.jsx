@@ -102,8 +102,8 @@ export const Overview = ({ user, project }) => {
     <h3 className="text-lg font-bold mt-12 mb-3">Project Batches</h3>
     <Batches project={project} />
     {modal !== null && <Submitting message={modal} />}
-    <pre>{JSON.stringify(user, null, 2)}</pre>
-    <pre>{JSON.stringify(project, null, 2)}</pre>
+    {/* <pre>{JSON.stringify(user, null, 2)}</pre> */}
+    {/* <pre>{JSON.stringify(project, null, 2)}</pre> */}
   </>;
 }
 

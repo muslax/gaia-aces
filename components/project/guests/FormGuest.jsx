@@ -1,5 +1,5 @@
 import { XIcon } from "@heroicons/react/solid"
-import { FormRowContainer } from "components/form/FormRow"
+import { FormBlock } from "components/form/FormRow"
 import { FormRow } from "components/form/FormRow"
 import { API_ROUTES } from "config/routes"
 import fetchJson from "lib/fetchJson"
@@ -82,14 +82,14 @@ export default function FormGuest({ guest, setGuest, setNewGuest, usernames, onC
         }}
       />
       <FormRow label="Password" disabled value="Akan dibuat oleh sistem" />
-      <FormRowContainer py="py-2">
+      <FormBlock py="py-2">
         <button
           className="h-9 px-5 text-white focus:outline-none rounded bg-green-500 hover:bg-green-600 active:bg-green-700 font-medium mr-3"
           onClick={submit}
         >
           Save Guest
         </button>
-      </FormRowContainer>
+      </FormBlock>
     </div>
   </>
 }

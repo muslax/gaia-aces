@@ -1,17 +1,26 @@
 import { useState } from "react"
 
-export function FormRowContainer({ children, bg, py }) {
+export function FormBlock({ children, labelWidth, label, bg, py }) {
   return <>
     <div className={`${bg ? bg : ''} ${py ? py : ''} flex items-center text-sm`}>
-      <div className="w-1/4 flex-shrink-0 text-gray-500">
-        <span className="pl-4 py-2 block">&nbsp;</span>
+      <div className={`${labelWidth ? labelWidth : 'w-1/4'} flex-shrink-0 text-gray-500`}>
+        <span className="py-1 block truncate">{label}</span>
       </div>
-      <div className="flex-grow font-medium">
-        <div className="px-4 py-1">
+      <div className="flex-grow">
+        <div className="flex items-center pl-2 py-1">
           {children}
         </div>
       </div>
     </div>
+  </>
+}
+
+
+export function InfoBlock({ label, labelWidth, value, valueWidth }) {
+  return <>
+    <FormBlock label={label} labelWidth={labelWidth}>
+      <div className={`${valueWidth ? valueWidth : 'w-full'} flex items-center h-9 px-3 bg-gray-100 rounded border border-gray-100`}>{value}</div>
+    </FormBlock>
   </>
 }
 
