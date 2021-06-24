@@ -4,11 +4,12 @@ import Link from "next/link";
 import { useState } from "react";
 
 export const Personae = ({ user, project }) => {
-  const batchId = getLastVisitedBatchId(project);
-  const { personae, isLoading, isError } = usePersonae(batchId);
-  const [filter, setFilter] = useState('');
+  const batchId = getLastVisitedBatchId(project)
+  const { personae, isLoading, isError } = usePersonae(batchId)
+  const [filter, setFilter] = useState('')
+  const [viewStack, setViewStack] = useState([])
 
-  if (isError || isLoading) return <>...</>;
+  if (isError || isLoading) return <>...</>
 
   return <>
     <div className="flex items-center rounded-md bg-gray-100 px-3 py-3 -mt-1 mb-5">
@@ -50,15 +51,28 @@ export const Personae = ({ user, project }) => {
       </thead>
       {personae.filter(person => person.fullname.toLowerCase().includes(filter)).map((person, index) => (
         <tbody key={person._id}>
-          <tr className="border-b">
+          <tr className="border-b text-sm">
             <td className="w-10 p-2">{ index + 1}</td>
             <td className="p-2">{person.fullname}</td>
             <td className="w-10 p-2">{person.tests.length}</td>
             <td className="w-10 p-2">{person.sims.length}</td>
           </tr>
+          <tr className="bg-gray-50 border-b text-sm">
+            <td className="w-10 p-2">{ index + 1}</td>
+            <td className="p-2">{person.fullname}</td>
+            <td colSpan="2" className="p-1">
+              <button className="text-xs bg-white rounded border border-indigo-300 text-indigo-500 inline-flex items-center h-6 px-3 ml-2">Delete</button>
+            </td>
+          </tr>
+          <tr className="bg-gray-50 border-b text-sm">
+            <td className="w-10 p-2"></td>
+            <td colSpan="3" className="p-2">
+              XXX
+            </td>
+          </tr>
         </tbody>
       ))}
     </table>
-    {/* <pre>{JSON.stringify(personae, null, 2)}</pre> */}
+    <pre>{JSON.stringify(personae, null, 2)}</pre>
   </>;
 }
