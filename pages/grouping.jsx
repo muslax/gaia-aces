@@ -38,6 +38,12 @@ export default function Grouping() {
 
   return <>
     <div className="max-w-4xl mx-auto p-6 mb-32">
+      <p className="text-xs font-medium mb-2">
+        <a target="_blank"
+          href="https://res.cloudinary.com/ptkj/image/upload/v1625086303/S_2021-06-23_at_22.23.30_leezon.png"
+          className="text-blue-500"
+        >Tabel Sriyanto</a>
+      </p>
       <h1 className="text-3xl">Grouping of {persons.length} persons</h1>
       <form onSubmit={submitHandler} className="my-4">
         <input type="number" min="8" max="120" value={number} className="text-xls font-bold"
