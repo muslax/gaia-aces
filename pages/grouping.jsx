@@ -91,6 +91,17 @@ export default function Grouping() {
       <pre>SCHEDULES: {JSON.stringify(schedules[0], null, 2)}</pre>
       <pre>Group 01: {JSON.stringify(groups[0], null, 2)}</pre>
 
+      <h3 className="font-bold mt-8 mb-4">Beberapa catatan</h3>
+      <ul className="list-decimal pl-4 ml-2">
+        <li>User perlu menginput tanggal batch</li>
+        <li>User dapat mengubah anggota grup, tapi tidak mengubah jumlah anggota grup</li>
+        <li>Bagaimana cara mengubah kompisisi anggota grup? Belum tahu</li>
+        <li>Test online dapat dicustom: scheduled / fullday / multidays</li>
+        <li>Belum bisa membuat scheduling diskusi/wawancara multidays</li>
+        <li>Mungkin perlu redifinisi: batch hanya mengakomodasi scheduling 1 hari</li>
+        <li>Fiksasi grouping dan scheduling bersifat taxing... sebaiknya sebagai one last action</li>
+        <li>Perlu masukan tentang urutan aksi supaya user-friendly</li>
+      </ul>
 
     </div>
   </>;
